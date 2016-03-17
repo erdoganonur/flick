@@ -59,6 +59,10 @@ module Flick
       %x(adb -s #{udid} shell screencap #{dir_name}/#{name}.png)
     end
     
+    def log name
+      %x(adb -s #{udid} logcat -v long > #{dir_name}/#{name}.log >> /dev/null 2>&1)
+    end
+    
     def recordable?
       (`adb -s #{udid} shell 'ls /system/bin/screenrecord'`).strip == "/system/bin/screenrecord"
     end

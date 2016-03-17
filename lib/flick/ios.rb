@@ -55,5 +55,9 @@ module Flick
     def screenshot name
       %x(idevicescreenshot -u #{udid} #{todir}/#{name}.png)
     end
+    
+    def log name
+      %x(idevicesyslog -u #{udid} > #{outdir}/#{name}.log >> /dev/null 2>&1)
+    end
   end
 end

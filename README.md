@@ -7,7 +7,7 @@ Features
 --------
 
 * Easily capture screenshots for Android and iOS.
-* Video record real android devices. (os > 4.4)
+* Video record real android devices. (OS > 4.4)
 	* Extend recording past the 180 seconds SDK limit.
 * Flick auto detects whether a device is recordable.
 	* Falls back to screenshot recording if video record is not available.
@@ -19,13 +19,11 @@ Features
 
 Reason
 ------
-I wanted an easy way to video record my automation tests for mobile. Unfortunately, you cannot video record on android emulators, but you can take screenshots! You also cannot video record iOS without using QuickTime, or doing what [this](https://github.com/appium/screen_recording) did, but it's not maintained anymore.
+I wanted an easy way to video record my automation tests for mobile, and the video quality didn't need to be perfect. Unfortunately, you cannot video record on android emulators, but you can take screenshots! You also cannot video record iOS without using QuickTime, or doing what [this](https://github.com/appium/screen_recording) did, but it's not maintained anymore.
 
-So I created Flick to work for my needs, and hopefully it will for others. It's also a CLI and language-agnostic, it can be used in any framework where you can make a system call. See examples  [here](https://github.com/isonic1/appium-mobile-grid/blob/flick/ios/spec/spec_helper.rb#L14) and [here](https://github.com/isonic1/appium-mobile-grid/blob/flick/android/spec/spec_helper.rb#L22).
+So I created Flick to work for my needs, and hopefully it will for others. It's also a CLI and language-agnostic, it can be used with any framework where you can make a system call. See examples [here](https://github.com/isonic1/appium-mobile-grid/blob/flick/ios/spec/spec_helper.rb#L14) and [here](https://github.com/isonic1/appium-mobile-grid/blob/flick/android/spec/spec_helper.rb#L22). I suppose there are use cases for this outside of test automation. I'd love to hear them if so.
 
-I suppose there are use cases for this outside of test automation. I'd love to hear them if so.
-
-If you're looking for high quality video, then this wouldn't be the tool for you. Take a look at this amazing tool [androidtool-mac](https://github.com/mortenjust/androidtool-mac) instead.
+If you're looking for high-quality video, then this wouldn't be the tool for you. Take a look at this great tool [androidtool-mac](https://github.com/mortenjust/androidtool-mac) instead.
 
 Prerequisites 
 -------------
@@ -39,7 +37,7 @@ Prerequisites
 * Install [SDK Tools](http://developer.android.com/sdk/installing/index.html?pkg=tools).
 * SDK tools are added to your $PATH. [OSX](http://stackoverflow.com/questions/5526470/trying-to-add-adb-to-path-variable-osx) 
 * Enable [USB Debugging](https://www.kingoapp.com/root-tutorials/how-to-enable-usb-debugging-mode-on-android.htm) on your device(s).
-* Emulator(s) have at least 1GB of [sdcard space](http://developer.android.com/tools/help/mksdcard.html).
+* Emulator or Devices have approximately 1GB of [sdcard space](http://developer.android.com/tools/help/mksdcard.html).
 
 #### iOS
 * Install [Xcode](https://developer.apple.com/xcode/download/).
@@ -175,12 +173,13 @@ Demo
 Bug reports and pull requests are welcome on GitHub at https://github.com/isonic1/flick. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](contributor-covenant.org) code of conduct.
 
 ## TODO
+* Add converting to .gif format as an option.
 * Capture logcat data.
 * capture iOS console data.
-* Add converting to gif format as an option.
 * Setup Flick android for cross platform os's (windows & linux)
 * Add screenshot capture for iOS Simulators.
 * Multithread the screenshot and pull process.
+* catpure video from iOS similar to [this](https://github.com/mortenjust/androidtool-mac/blob/9347cd9aeca9e7370e323d12f862bc5d8beacc25/AndroidTool/IOSDeviceHelper.swift#L56)
 
 ## License
 

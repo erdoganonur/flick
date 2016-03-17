@@ -1,9 +1,11 @@
 class Video
 
-  attr_accessor :platform, :image_count, :seconds, :driver, :extended, :udid
+  attr_accessor :action, :platform, :image_count, :seconds, :driver, :extended, :udid
   
   def initialize options
+    Flick::Checker.action options[:action]
     Flick::Checker.platform options[:platform]
+    self.action = options[:action]
     self.platform = options[:platform]
     case self.platform
     when "ios"
@@ -23,6 +25,10 @@ class Video
   
   def ios
     platform == "ios"
+  end
+  
+  def run
+    self.send(action)
   end
             
   def start
