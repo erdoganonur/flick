@@ -43,6 +43,16 @@ module Flick
       end
     end
     
+    def info
+      specs = { os: "ProductVersion", name: "DeviceName", arc: "CPUArchitecture", type: "DeviceClass", sdk: "ProductType" }
+      hash = { udid: udid }
+      specs.each do |key, spec|
+        value = (`ideviceinfo -u #{udid} | grep #{spec} | awk '{$1=""; print $0}'`).strip
+        hash.merge!({key=> "#{value}"})
+      end
+      hash
+    end
+    
     def recordable?
       false
     end

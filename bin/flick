@@ -73,11 +73,13 @@ command :info do |c|
   c.example 'description', 'flick info -p ios'
   c.option '-p', '--platform PLATFORM', String, 'Set platform: android or ios'
   c.option '-u', '--udid UDID', String, 'Set device UDID.'
+  c.option '-s', '--save SAVE', 'Save device info to a file.'
   c.option '-o', '--outdir OUTDIR', String, "Save device info to file. Default is #{Dir.pwd}"
   c.action do |args, options|
     options.default \
+    :save => false,
     :outdir => Dir.pwd #defaults to save in current directory.
   
-    Info.new(options.default).run
+    Info.new(options.default).info
   end
 end
