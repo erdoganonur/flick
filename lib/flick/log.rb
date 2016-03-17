@@ -1,6 +1,6 @@
 class Log
   
-  attr_accessor :action, :platform, :driver
+  attr_accessor :action, :platform, :driver, :udid
   
   def initialize options
     Flick::Checker.action options[:action]
@@ -14,6 +14,7 @@ class Log
     when "android"
       self.driver = Flick::Android.new options
     end
+    self.udid = self.driver.udid
   end
   
   def run

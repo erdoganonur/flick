@@ -50,6 +50,16 @@ module Flick
         abort unless specs
       end
     end
+    
+    def info
+      specs = { os: "ro.build.version.release", manufacturer: "ro.product.manufacturer", model: "ro.product.model", sdk: "ro.build.version.sdk" }
+      hash = { udid: udid }
+      specs.each do |key, spec|
+        value = `adb -s #{udid} shell getprop "#{spec}"`.strip
+        hash.merge!({key=> "#{value}"})
+      end
+      hash
+    end
 
     def os_version
       `adb -s #{udid} shell getprop "ro.build.version.release"`.strip.to_f
@@ -60,7 +70,7 @@ module Flick
     end
     
     def log name
-      %x(adb -s #{udid} logcat -v long > #{dir_name}/#{name}.log >> /dev/null 2>&1)
+      %x(adb -s #{udid} logcat -v long > #{outdir}/#{name}.log)
     end
     
     def recordable?

@@ -25,7 +25,7 @@ command :video do |c|
     :count => 500, #This is a safety check to stop runaway screenshot process.
     :extend => false, #Extend android video recording (for REAL devices and os >= 4.4) past 180 seconds.
     :unique => true, #defaults to pulling only unique screenshots. Speeds up pulling process from device.
-    :outdir => Dir.pwd #defaults to current directory.
+    :outdir => Dir.pwd #defaults to save in current directory.
     
     Video.new(options.default).run
   end
@@ -46,6 +46,7 @@ command :screenshot do |c|
     
     Screenshot.new(options.default).screenshot
   end
+end
   
 command :log do |c|
   c.syntax = 'flick log [options]'
@@ -61,6 +62,22 @@ command :log do |c|
     options.default \
     :outdir => Dir.pwd #defaults to save in current directory.
   
-    Log.new(options.default).screenshot
+    Log.new(options.default).run
+  end
+end
+
+command :info do |c|
+  c.syntax = 'flick info [options]'
+  c.summary = 'Get the device information'
+  c.description = c.summary
+  c.example 'description', 'flick info -p ios'
+  c.option '-p', '--platform PLATFORM', String, 'Set platform: android or ios'
+  c.option '-u', '--udid UDID', String, 'Set device UDID.'
+  c.option '-o', '--outdir OUTDIR', String, "Save device info to file. Default is #{Dir.pwd}"
+  c.action do |args, options|
+    options.default \
+    :outdir => Dir.pwd #defaults to save in current directory.
+  
+    Info.new(options.default).run
   end
 end

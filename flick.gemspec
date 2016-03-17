@@ -33,4 +33,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "commander"
   spec.add_dependency "json"
   spec.add_dependency "wannabe_bool"
+  spec.add_dependency "awesome_print"
 end

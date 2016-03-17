@@ -1,6 +1,6 @@
 class Video
 
-  attr_accessor :action, :platform, :image_count, :seconds, :driver, :extended, :udid
+  attr_accessor :action, :platform, :driver, :image_count, :seconds, :extended, :udid
   
   def initialize options
     Flick::Checker.action options[:action]

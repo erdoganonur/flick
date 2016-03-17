@@ -4,7 +4,6 @@ module Flick
     
     def initialize options
       Flick::Checker.system_dependency "idevice_id"
-      Flick::Checker.system_dependency "idevicescreenshot"
       self.flick_dir = "#{Dir.home}/.flick"
       self.udid = options.fetch(:udid, get_device_udid(options))
       self.name = options.fetch(:name, self.udid)
@@ -53,11 +52,13 @@ module Flick
     end
     
     def screenshot name
+      Flick::Checker.system_dependency "idevicescreenshot"
       %x(idevicescreenshot -u #{udid} #{todir}/#{name}.png)
     end
     
     def log name
-      %x(idevicesyslog -u #{udid} > #{outdir}/#{name}.log >> /dev/null 2>&1)
+      Flick::Checker.system_dependency "idevicesyslog"
+      %x(idevicesyslog -u #{udid} > #{outdir}/#{name}.log)
     end
   end
 end
