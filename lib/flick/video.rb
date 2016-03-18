@@ -1,9 +1,12 @@
 class Video
 
-  attr_accessor :platform, :image_count, :seconds, :driver, :extended, :udid
+  attr_accessor :action, :platform, :driver, :image_count, :seconds, :extended, :udid, :format
   
   def initialize options
+    Flick::Checker.action options[:action]
     Flick::Checker.platform options[:platform]
+    Flick::Checker.format options[:format]
+    self.action = options[:action]
     self.platform = options[:platform]
     case self.platform
     when "ios"
@@ -15,6 +18,7 @@ class Video
     self.seconds = options[:seconds].to_f
     self.extended = options[:extend].to_b
     self.udid = self.driver.udid
+    self.format = options[:format]
   end
        
   def android
@@ -23,6 +27,10 @@ class Video
   
   def ios
     platform == "ios"
+  end
+  
+  def run
+    self.send(action)
   end
             
   def start
@@ -88,7 +96,16 @@ class Video
   def stop_record
     Flick::System.kill_process "video", udid
     sleep 5 #wait for video process to finish
-    driver.merge_videos
+    driver.pull_files
+    files = (`ls #{driver.flick_dir}/#{udid}*.mp4`).split("\n")
+    return if files.empty?
+    files.each { |file| system("mp4box -cat #{file} #{driver.flick_dir}/#{driver.name}.mp4") }
+    puts "Saving to #{driver.outdir}/#{driver.name}.#{format}"
+    if format == "gif"
+      gif
+    else
+      %x(nohup mv #{driver.flick_dir}/#{driver.name}.mp4 #{driver.outdir}/#{driver.name}.mp4)
+    end
   end
   
   def start_screenshot_record
@@ -103,8 +120,8 @@ class Video
           driver.screenshot "#{udid}-#{count}"
           count.next!; sleep seconds
         else
-          puts "\nStop count exceeded. Saving to #{driver.outdir}/#{driver.name}.mp4".red 
-          stop_screenshot_recording
+          puts "\nStop count exceeded. Saving to #{driver.outdir}/#{driver.name}.#{format}".red 
+          self.send(format)
           break
         end
       end
@@ -116,12 +133,26 @@ class Video
     Flick::System.kill_process "screenshot", udid
     `rm /tmp/#{udid}-pidfile >> /dev/null 2>&1`
     driver.pull_files if android
-    convert_screenshots_to_video
+    puts "Saving to #{driver.outdir}/#{driver.name}.#{format}"
+    self.send(format)
   end
   
-  def convert_screenshots_to_video
-    %x(find #{driver.flick_dir} -type f -size 0 | xargs rm '#{udid}*.png' -f >> /dev/null 2>&1) #rm 0 byte files.
-    puts "Saving to #{driver.outdir}/#{driver.name}.mp4"
-    %x(yes y | nohup ffmpeg -framerate 1 -pattern_type glob -i '#{driver.flick_dir}/#{udid}*.png' -c:v libx264 -pix_fmt yuv420p #{driver.outdir}/#{driver.name}.mp4 >> /dev/null 2>&1)
+  def gif
+    convert_images_to_mp4 unless driver.recordable?
+    %x(nohup ffmpeg -i #{driver.flick_dir}/#{driver.name}.mp4 -pix_fmt rgb24 #{driver.outdir}/#{driver.name}.gif)
+  end
+  
+  def mp4
+    convert_images_to_mp4
+    %x(nohup mv #{driver.flick_dir}/#{driver.name}.mp4 #{driver.outdir}/#{driver.name}.mp4) unless format == "gif"
+  end
+  
+  def convert_images_to_mp4
+    remove_zero_byte_images
+    %x(nohup ffmpeg -framerate 1 -pattern_type glob -i '#{driver.flick_dir}/#{udid}*.png' -c:v libx264 -pix_fmt yuv420p #{driver.flick_dir}/#{driver.name}.mp4)
+  end
+  
+  def remove_zero_byte_images
+    %x(nohup find #{driver.flick_dir} -type f -size 0 | xargs rm '#{udid}*.png' -f)
   end
 end

@@ -4,7 +4,6 @@ module Flick
     
     def initialize options
       Flick::Checker.system_dependency "idevice_id"
-      Flick::Checker.system_dependency "idevicescreenshot"
       self.flick_dir = "#{Dir.home}/.flick"
       self.udid = options.fetch(:udid, get_device_udid(options))
       self.name = options.fetch(:name, self.udid)
@@ -44,6 +43,16 @@ module Flick
       end
     end
     
+    def info
+      specs = { os: "ProductVersion", name: "DeviceName", arc: "CPUArchitecture", type: "DeviceClass", sdk: "ProductType" }
+      hash = { udid: udid }
+      specs.each do |key, spec|
+        value = (`ideviceinfo -u #{udid} | grep #{spec} | awk '{$1=""; print $0}'`).strip
+        hash.merge!({key=> "#{value}"})
+      end
+      hash
+    end
+    
     def recordable?
       false
     end
@@ -53,7 +62,13 @@ module Flick
     end
     
     def screenshot name
+      Flick::Checker.system_dependency "idevicescreenshot"
       %x(idevicescreenshot -u #{udid} #{todir}/#{name}.png)
+    end
+    
+    def log name
+      Flick::Checker.system_dependency "idevicesyslog"
+      %x(idevicesyslog -u #{udid} > #{outdir}/#{name}.log)
     end
   end
 end

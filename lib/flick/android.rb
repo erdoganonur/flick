@@ -50,6 +50,16 @@ module Flick
         abort unless specs
       end
     end
+    
+    def info
+      specs = { os: "ro.build.version.release", manufacturer: "ro.product.manufacturer", model: "ro.product.model", sdk: "ro.build.version.sdk" }
+      hash = { udid: udid }
+      specs.each do |key, spec|
+        value = `adb -s #{udid} shell getprop "#{spec}"`.strip
+        hash.merge!({key=> "#{value}"})
+      end
+      hash
+    end
 
     def os_version
       `adb -s #{udid} shell getprop "ro.build.version.release"`.strip.to_f
@@ -57,6 +67,10 @@ module Flick
         
     def screenshot name
       %x(adb -s #{udid} shell screencap #{dir_name}/#{name}.png)
+    end
+    
+    def log name
+      %x(adb -s #{udid} logcat -v long > #{outdir}/#{name}.log)
     end
     
     def recordable?
@@ -70,15 +84,7 @@ module Flick
     def pull_file file, dir
       %x(adb -s #{udid} pull #{file} #{dir} >> /dev/null 2>&1)
     end
-    
-    def merge_videos
-      pull_files
-      files = (`ls #{flick_dir}/#{udid}*.mp4`).split("\n")
-      return if files.empty?
-      puts "Saving to #{outdir}/#{name}.mp4"
-      files.each { |file| system("mp4box -cat #{file} #{outdir}/#{name}.mp4") }
-    end
-    
+        
     def unique_files
       if os_version < 6.0
         command = "md5"
