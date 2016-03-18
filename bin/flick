@@ -3,21 +3,22 @@ require_relative '../lib/flick'
 require 'commander/import'
 
 program :version, '0.0.1'
-program :description, 'A CLI to capture screenshots and video for Android (Devices & Emulators) and iOS (Devices).'
+program :description, 'A CLI to capture screenshots, video, logs, and device info for Android (Devices & Emulators) and iOS (Devices).'
 
 command :video do |c|
-  c.syntax = 'flick record [options]'
+  c.syntax = 'flick video [options]'
   c.description = 'Record video'
-  c.example 'description', 'flick video -a start -p android -u TA64300B9C'
+  c.example 'description', "flick video -a start -p android -e true -u TA64300B9C\n    flick video -a stop -p android -n my-video -o /mydir"
   c.option '-a', '--action ACTION', String, 'Set action: start or stop'
   c.option '-p', '--platform PLATFORM', String, 'Set platform: android or ios'
   c.option '-u', '--udid UDID', String, 'Set device UDID. Defaults to only connected device per platform'
   c.option '-s', '--seconds SECONDS', String, 'Set the seconds per screenshot. Default: 0.5'
   c.option '-c', '--count COUNT', Integer, 'Set maximum number of screenshots. Default: 500'
-  c.option '-e', '--extend EXTEND', 'Extend android video past 180 seconds SDK limit. (REAL devices only). Default: false'
+  c.option '-e', '--extend EXTEND', 'Extend android video past 180 seconds SDK limit. (REAL devices only - OS > 4.4). Default: false'
   #The options below are relavent to the stop action...
-  c.option '-n', '--name NAME', String, "Set name of output file, Default: UDID"
+  c.option '-n', '--name NAME', String, 'Set name of output file, Default: UDID'
   c.option '-q', '--unique UNIQUE', 'Pull only unique screenshots. Significantly speeds up the pulling process. Default: true'
+  c.option '-f', '--format FORMAT', String, 'Set output format (mp4 or gif). Default: mp4'
   c.option '-o', '--outdir OUTDIR', String, "Set output directory. Default is #{Dir.pwd}"
   c.action do |args, options|
     options.default \
@@ -25,6 +26,7 @@ command :video do |c|
     :count => 500, #This is a safety check to stop runaway screenshot process.
     :extend => false, #Extend android video recording (for REAL devices and os >= 4.4) past 180 seconds.
     :unique => true, #defaults to pulling only unique screenshots. Speeds up pulling process from device.
+    :format => "mp4",
     :outdir => Dir.pwd #defaults to save in current directory.
     
     Video.new(options.default).run
@@ -50,9 +52,9 @@ end
   
 command :log do |c|
   c.syntax = 'flick log [options]'
-  c.summary = 'Get the device log output'
+  c.summary = 'Get device log output'
   c.description = c.summary
-  c.example 'description', 'flick log -a start -p ios'
+  c.example 'description', "flick log -a start -p ios -o /logs -n myLog\n    flick log -a stop -p ios"
   c.option '-a', '--action ACTION', String, 'Set action: start or stop'
   c.option '-p', '--platform PLATFORM', String, 'Set platform: android or ios'
   c.option '-u', '--udid UDID', String, 'Set device UDID.'
@@ -68,9 +70,9 @@ end
 
 command :info do |c|
   c.syntax = 'flick info [options]'
-  c.summary = 'Get the device information'
+  c.summary = 'Get device information'
   c.description = c.summary
-  c.example 'description', 'flick info -p ios'
+  c.example 'description', "flick info -p android\n    flick info -p ios"
   c.option '-p', '--platform PLATFORM', String, 'Set platform: android or ios'
   c.option '-u', '--udid UDID', String, 'Set device UDID.'
   c.option '-s', '--save SAVE', 'Save device info to a file.'

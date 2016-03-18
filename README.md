@@ -1,7 +1,7 @@
 # FLICK
-A CLI to capture screenshots and video for Android (Devices & Emulators) and iOS (**Real** Devices).
+A CLI to capture screenshots, video, logs, and device information for Android (Devices & Emulators) and iOS (Devices).
 
-<img src="https://www.dropbox.com/s/o49et3fhncu3l4v/animacii_09.gif?raw=1">
+<img src="https://www.dropbox.com/s/o49et3fhncu3l4v/animacii_09.gif?raw=1" width="600">
 
 Features
 --------
@@ -9,19 +9,22 @@ Features
 * Easily capture screenshots for Android and iOS.
 * Video record real android devices. (OS > 4.4)
 	* Extend recording past the 180 seconds SDK limit.
-* Flick auto detects whether a device is recordable.
+* Save video formats in mp4 or gif.
+* Flick auto detects if a device is recordable.
 	* Falls back to screenshot recording if video record is not available.
 * Video record android emulators and **real** iOS devices.
-	* Takes a screenshot every 0.5 seconds (default), then combines the screenshots into a single mp4.
+	* Takes a screenshot every 0.5 seconds (default), then combines the screenshots into a single mp4 or gif.
 	* iOS example [here](https://www.dropbox.com/s/4pjhhmnsx9gj5pi/ios-flick-example.mp4?dl=0)
 	* Android Emulator example [here](https://www.dropbox.com/s/gwunrvgzxkny13z/android-flick-example.mp4?dl=0)
-* Flick auto selects the device when only one device is connected, per platform.
+* Flick auto selects device when only one device is connected, per platform.
+* Save log output for Android or iOS.
+* Display device information or save it to a file.
 
 Reason
 ------
-I wanted an easy way to video record my automation tests for mobile, and the video quality didn't need to be perfect. Unfortunately, you cannot video record on android emulators, but you can take screenshots! You also cannot video record iOS without using QuickTime, or doing what [this](https://github.com/appium/screen_recording) did, but it's not maintained anymore.
+I wanted an easy way to video record my automation tests for mobile, and I didn't need the video quality to be perfect. Unfortunately, you cannot video record on android emulators, but you can take screenshots! You also cannot video record iOS without using QuickTime, or doing what [this](https://github.com/appium/screen_recording) did, but it's not maintained anymore.
 
-So I created Flick to work for my needs, and hopefully it will for others. It's also a CLI and language-agnostic, it can be used with any framework where you can make a system call. See examples [here](https://github.com/isonic1/appium-mobile-grid/blob/flick/ios/spec/spec_helper.rb#L14) and [here](https://github.com/isonic1/appium-mobile-grid/blob/flick/android/spec/spec_helper.rb#L22). I suppose there are use cases for this outside of test automation. I'd love to hear them if so.
+So I created Flick to work for my needs, and included a couple other tools I use frequently. Hopefully this will be as helpful for others too. It's also a CLI and language-agnostic, it can be used with any framework where you can make a system call. See examples [here](https://github.com/isonic1/appium-mobile-grid/blob/flick/ios/spec/spec_helper.rb#L14) and [here](https://github.com/isonic1/appium-mobile-grid/blob/flick/android/spec/spec_helper.rb#L22). I suppose there are use cases for this outside of test automation. I'd love to hear them if so.
 
 If you're looking for high-quality video, then this wouldn't be the tool for you. Take a look at this great tool [androidtool-mac](https://github.com/mortenjust/androidtool-mac) instead.
 
@@ -54,132 +57,69 @@ Installation
 
 Usage:
 ------
-
     $ flick --help
 
-      DESCRIPTION:
-      A CLI to capture screenshots and video for Android (Devices & Emulators) and iOS (Devices).
-
-	  COMMANDS:
-        
-	    help       Display global or [command] help documentation           
-	    screenshot Take a screenshot                
-	    start      Start video recording            
-	    stop       Stop video recording    
-
-      GLOBAL OPTIONS:
-	    
-		-h, --help 
-	        Display help documentation
-        
-	    -v, --version 
-	        Display version information
-        
-	    -t, --trace 
-	        Display backtrace when an error occurs 
-
-```
-    
-    $ flick start --help
+    DESCRIPTION:
   
-    SYNOPSYS:
-	  flick start [options]
-	  
-	DESCRIPTION:
-	  Start video recording
+    A CLI to capture screenshots, video, logs, and device info for Android (Devices & Emulators) and iOS (Devices).
 	
-	EXAMPLES:    
-      flick start -p ios
-	  flick start -p android -u emulator-5554
-	  flick start -p android -u TA64300B9C -e true
+	COMMANDS:
+   
+    help       Display global or [command] help documentation           
+    info       Get device information           
+    log        Get device log output            
+    screenshot Take a screenshot                
+    video      Record video     
+    
+    GLOBAL OPTIONS:
+        
+    -h, --help 
+      Display help documentation
+        
+    -v, --version 
+      Display version information
+        
+    -t, --trace 
+      Display backtrace when an error occurs
 
-     OPTIONS:
-	  	-p, --platform PLATFORM 
-	        Set platform: android or ios
-    
-	    -u, --udid UDID 
-	        Set device UDID.
-    
-	    -s, --seconds SECONDS 
-	        Set the seconds per screenshot. Default: 0.5
-    
-	    -c, --count COUNT 
-	        Set maximum number of screenshots. Default: 500
-    
-	    -e, --extend EXTEND 
-	        Extend android video recording past 180 seconds for REAL devices. Default: false
-```
-
-    $ flick stop --help
-  
-    SYNOPSYS:
-	  flick stop [options]
-	  
-	DESCRIPTION:
-	  Stop video recording
+* See usage examples in:
 	
-	EXAMPLES:    
-      flick stop -p android -n my_video
-	  flick stop -p android -u emulator-5554 -o $HOME -q false
-
-     OPTIONS:
-	    -p, --platform PLATFORM 
-	        Set platform: android or ios
-        
-	    -u, --udid UDID 
-	        Set device UDID
-        
-	    -n, --name NAME 
-	        Set name of output file, Default: UDID
-        
-	    -q, --unique UNIQUE 
-	        Pull only unique screenshots. Significantly speeds up the pulling process. Default: true
-        
-	    -o, --outdir OUTDIR 
-	        Set output directory. Default is /Users/justin/repos/flick
-```
-
-    $ flick screenshot --help
-  
-    SYNOPSYS:
-	  flick screenshot [options]
-	  
-	DESCRIPTION:
-	  Take a screenshot
+	`$ flick info --help`
+		
+		$ flick info -p (ios or android)
+		$ flick info -p (ios or android) -s true -o $HOME
 	
-	EXAMPLES:    
-      flick screenshot -p ios
-	  flick screenshot -p android -n my_screenshot -o ~/screenshots
+ 
+	`$ flick log --help`
+		
+		$ flick log -a start -p (ios or android) -o $HOME -n iosLog
+		$ flick log -a stop -p (ios or android)
 
-     OPTIONS:
-	    -p, --platform PLATFORM 
-	        Set platform: android or ios
-        
-	    -u, --udid UDID 
-	        Set device UDID.
-        
-	    -n, --name NAME 
-	        Set name of output file. Default: UDID
-        
-	    -o, --outdir OUTDIR 
-	        Set output directory. Default is /Users/justin/repos/flick
-```
+	`$ flick screenshot --help`
+		
+		$ flick screenshot -p (ios or android)
+ 
+	`$ flick video --help`
+		
+		$ flick video -a start -p (ios or android)
+		$ flick video -a stop -p (ios or android) -o /output -n myVideo -f gif
+		$ flick video -a start -p android -u emulator-5554 -c 1000
+		$ flick video -a stop -p android -u emulator-5554
+
 Demo
 ----
-<img src="https://www.dropbox.com/s/7dcuvezwcajvb42/flick.gif?raw=1">
+<img src="https://www.dropbox.com/s/9be37gc1c2dlxa6/flick-demo.gif?raw=1" width="600">
 
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/isonic1/flick. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](contributor-covenant.org) code of conduct.
 
 ## TODO
-* Add converting to .gif format as an option.
-* Capture logcat data.
-* capture iOS console data.
+* Dry the code a bit.
 * Setup Flick android for cross platform os's (windows & linux)
 * Add screenshot capture for iOS Simulators.
 * Multithread the screenshot and pull process.
-* catpure video from iOS similar to [this](https://github.com/mortenjust/androidtool-mac/blob/9347cd9aeca9e7370e323d12f862bc5d8beacc25/AndroidTool/IOSDeviceHelper.swift#L56)
+* Look into capturing video from iOS similar to [this](https://github.com/mortenjust/androidtool-mac/blob/9347cd9aeca9e7370e323d12f862bc5d8beacc25/AndroidTool/IOSDeviceHelper.swift#L56)
 
 ## License
 

@@ -23,5 +23,13 @@ module Flick
         abort
       end
     end
+    
+    def self.format format
+      formats = ["mp4","gif"]
+      unless formats.include? format
+        puts "\nPlease specify a valid format #{formats}. e.g. flick <job> -a stop -p ios -f #{formats.sample}\n".red
+        abort
+      end
+    end
   end
 end

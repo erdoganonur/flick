@@ -84,15 +84,7 @@ module Flick
     def pull_file file, dir
       %x(adb -s #{udid} pull #{file} #{dir} >> /dev/null 2>&1)
     end
-    
-    def merge_videos
-      pull_files
-      files = (`ls #{flick_dir}/#{udid}*.mp4`).split("\n")
-      return if files.empty?
-      puts "Saving to #{outdir}/#{name}.mp4"
-      files.each { |file| system("mp4box -cat #{file} #{outdir}/#{name}.mp4") }
-    end
-    
+        
     def unique_files
       if os_version < 6.0
         command = "md5"
