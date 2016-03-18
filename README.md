@@ -24,7 +24,7 @@ Reason
 ------
 I wanted an easy way to video record my automation tests for mobile, and I didn't need the video quality to be perfect. Unfortunately, you cannot video record on android emulators, but you can take screenshots! You also cannot video record iOS without using QuickTime, or doing what [this](https://github.com/appium/screen_recording) did, but it's not maintained anymore.
 
-So I created Flick to work for my needs, and included a couple other tools I use frequently. Hopefully this will be as helpful for others too. It's also a CLI and language-agnostic, it can be used with any framework where you can make a system call. See examples [here](https://github.com/isonic1/appium-mobile-grid/blob/flick/ios/spec/spec_helper.rb#L14) and [here](https://github.com/isonic1/appium-mobile-grid/blob/flick/android/spec/spec_helper.rb#L22). I suppose there are use cases for this outside of test automation. I'd love to hear them if so.
+So I created Flick to work for my needs, and included a couple other tools I use frequently. Hopefully this will be as helpful for others too. It's also a CLI and language-agnostic, it can be used with any framework where you can make a system call. See examples [here](https://github.com/isonic1/appium-mobile-grid/blob/flick/ios/spec/spec_helper.rb#L15-L16) and [here](https://github.com/isonic1/appium-mobile-grid/blob/flick/android/spec/spec_helper.rb#L22-L23). I suppose there are use cases for this outside of test automation. I'd love to hear them if so.
 
 If you're looking for high-quality video, then this wouldn't be the tool for you. Take a look at this great tool [androidtool-mac](https://github.com/mortenjust/androidtool-mac) instead.
 

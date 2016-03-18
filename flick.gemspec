@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Justin"]
   spec.email         = ["justin.ison@gmail.com"]
 
-  spec.summary       = %q{A CLI to capture screenshots and video for Android (Devices & Emulators) and iOS (Devices).}
-  spec.description   = %q{A Screenshot and Video record too for iOS and Android from command line}
+  spec.summary       = %q{A CLI to capture screenshots, video, logs, and device information for Android (Devices & Emulators) and iOS (Devices).}
+  spec.description   = %q{A CLI with helpful QA tools for iOS and Android from the command line}
   spec.homepage      = "https://github.com/isonic1/flick"
   spec.license       = "MIT"
 
@@ -28,10 +28,10 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler", "~> 1.10"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec"
-  spec.add_dependency "parallel"
-  spec.add_dependency "colorize"
-  spec.add_dependency "commander"
-  spec.add_dependency "json"
-  spec.add_dependency "wannabe_bool"
-  spec.add_dependency "awesome_print"
+  spec.add_dependency "parallel", "~> 1.6.2"
+  spec.add_dependency "colorize", "~> 0.7.7"
+  spec.add_dependency "commander", "~> 4.4.0"
+  spec.add_dependency "json", "~> 1.8.3"
+  spec.add_dependency "wannabe_bool", "~> 0.5.0"
+  spec.add_dependency "awesome_print", "~> 1.6.1"
 end
