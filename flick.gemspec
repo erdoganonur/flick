@@ -27,11 +27,11 @@ Gem::Specification.new do |spec|
   
   spec.add_development_dependency "bundler", "~> 1.10"
   spec.add_development_dependency "rake", "~> 10.0"
-  spec.add_development_dependency "rspec"
-  spec.add_dependency "parallel", "~> 1.6.2"
+  spec.add_development_dependency "rspec", '~> 3.4', '>= 3.4.0'
+  spec.add_dependency "parallel", '~> 1.6', '>= 1.6.2'
   spec.add_dependency "colorize", "~> 0.7.7"
-  spec.add_dependency "commander", "~> 4.4.0"
-  spec.add_dependency "json", "~> 1.8.3"
+  spec.add_dependency "commander", '~> 4.4', '>= 4.4.0'
+  spec.add_dependency "json", '~> 1.8', '>= 1.8.3'
   spec.add_dependency "wannabe_bool", "~> 0.5.0"
-  spec.add_dependency "awesome_print", "~> 1.6.1"
+  spec.add_dependency "awesome_print", '~> 1.6', '>= 1.6.1'
 end
