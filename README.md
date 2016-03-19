@@ -119,7 +119,7 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/isonic
 * Setup Flick android for cross platform os's (windows & linux)
 * Add screenshot capture for iOS Simulators.
 * Multithread the screenshot and pull process.
-* Look into capturing video from iOS similar to [this](https://github.com/mortenjust/androidtool-mac/blob/9347cd9aeca9e7370e323d12f862bc5d8beacc25/AndroidTool/IOSDeviceHelper.swift#L56)
+* Look into capturing video for iOS similar to [this](https://github.com/mortenjust/androidtool-mac/blob/9347cd9aeca9e7370e323d12f862bc5d8beacc25/AndroidTool/IOSDeviceHelper.swift#L56)
 
 ## License
 
