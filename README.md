@@ -14,6 +14,7 @@ Features
 	* Falls back to screenshot recording if video record is not available.
 * Video record android emulators and **real** iOS devices.
 	* Takes a screenshot every 0.5 seconds (default), then combines the screenshots into a single mp4 or gif.
+	* Android pulls only unique (default) screenshots from devices/emulators. e.g. A 1 minute test run might convert to only 30 seconds of video based on unique images. You can change this by passing `-q false` to pull all images instead.
 	* iOS example [here](https://www.dropbox.com/s/4pjhhmnsx9gj5pi/ios-flick-example.mp4?dl=0)
 	* Android Emulator example [here](https://www.dropbox.com/s/gwunrvgzxkny13z/android-flick-example.mp4?dl=0)
 * Flick auto selects device when only one device is connected, per platform.
