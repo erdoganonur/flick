@@ -94,8 +94,14 @@ command :perf do |c|
   c.option '-a', '--action ACTION', String, 'Set action: start or stop'
   c.option '-p', '--platform PLATFORM', String, 'Set platform: android or ios'
   c.option '-u', '--udid UDID', String, 'Set device UDID.'
-  c.option '-n', '--name NAME', String, 'Set the package or app name'
+  c.option '-n', '--name NAME', String, 'Set the app package name'
+  c.option '-g', '--graphite GRAPHITE', 'Set the graphite server uri'
+  c.option '-e', '--example EXAMPLE', String, 'Set the example / test name'
   c.action do |args, options|
+    options.default \
+    :graphite => 'localhost:2003',
+    :example => 'debug'
+
     Performance.new(options.default).run
   end
 end

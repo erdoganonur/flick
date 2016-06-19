@@ -112,11 +112,12 @@ module Flick
     end
 
     def memory app
-      %x(adb -s #{udid} shell procrank | grep #{app} | awk '{print $4}').strip.chomp("K").to_i * 0.000125
+      (%x(adb -s #{udid} shell dumpsys meminfo | grep #{app} | awk '{print $1}').strip.split.last.to_i * 0.000125).round(2)
+      #%x(adb -s #{udid} shell procrank | grep #{app} | awk '{print $4}').strip.chomp("K").to_i * 0.000125
     end
 
     def cpu app
-      %x(adb -s #{udid} shell top -n 1 -d 0.1 | grep #{app} | awk '{print $3}').strip
+      %x(adb -s #{udid} shell top -n 1 -d 1 | grep #{app} | awk '{print $3}').strip.chomp("%")
     end
   end
 end
