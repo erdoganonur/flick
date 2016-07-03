@@ -35,5 +35,4 @@ Gem::Specification.new do |spec|
   spec.add_dependency "wannabe_bool", "~> 0.5.0"
   spec.add_dependency "awesome_print", '~> 1.6', '>= 1.6.1'
   spec.add_dependency "os"
-  spec.add_dependency "fileutils"
 end

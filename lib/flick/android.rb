@@ -21,8 +21,8 @@ module Flick
     end
 
     def clear_files
-      %x(adb -s #{udid} shell rm '#{dir_name}/*' >> /dev/null 2>&1)
       Flick::System.clean_system_dir flick_dir, udid
+      %x(adb -s #{udid} shell rm '#{dir_name}/*' >> /dev/null 2>&1)
     end
 
     def devices

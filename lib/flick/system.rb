@@ -2,15 +2,25 @@ module Flick
   module System
 
     def self.setup_system_dir dir_name
-      FileUtils.mkdir_p dir_name
+      Dir.mkdir dir_name unless File.exists? dir_name
     end
 
     def self.clean_system_dir dir_name, udid
-      FileUtils.rm_rf(Dir.glob("#{dir_name}/#{udid}*"))
+      Dir.glob("#{dir_name}/#{udid}*").each do |file|
+        File.delete file
+      end
+    end
+
+    def self.find_pid type, udid
+      ProcTable.ps.find { |x| x.cmdline.include? "#{type}-#{udid}" }.pid rescue nil
+    end
+
+    def self.kill pid
+      Process.kill 'SIGKILL', pid unless pid.nil?
     end
 
     def self.process_running? type, udid
-      pid = ProcTable.ps.find { |x| x.cmdline.include? "#{type}-#{udid}" }.pid rescue nil
+      pid = self.find_pid type, udid
       unless pid.nil?
         true
       else
@@ -19,17 +29,17 @@ module Flick
     end
 
     def self.kill_process type, udid
-      pid = ProcTable.ps.find { |x| x.cmdline.include? "#{type}-#{udid}" }.pid rescue nil
-      Process.kill 'SIGKILL', pid unless pid.nil?
+      pid = self.find_pid type, udid
+      self.kill pid
 
       if type == "video"
         pid = ProcTable.ps.find { |x| x.cmdline.include? "#{udid}-" }.pid rescue nil
-        Process.kill 'SIGKILL', pid unless pid.nil?
+        self.kill pid
       end
 
       if type == "log" && OS.mac?
         pid = ProcTable.ps.find { |x| x.cmdline.include? "idevicesyslog" }.pid rescue nil
-        Process.kill 'SIGKILL', pid unless pid.nil?
+        self.kill pid
       end
     end
 
