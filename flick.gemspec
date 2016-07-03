@@ -24,7 +24,7 @@ Gem::Specification.new do |spec|
   spec.bindir        = "bin"
   spec.executables   = ["flick"]
   spec.require_paths = ["lib"]
-  
+
   spec.add_development_dependency "bundler", "~> 1.10"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", '~> 3.4', '>= 3.4.0'
@@ -34,4 +34,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "json", '~> 1.8', '>= 1.8.3'
   spec.add_dependency "wannabe_bool", "~> 0.5.0"
   spec.add_dependency "awesome_print", '~> 1.6', '>= 1.6.1'
+  spec.add_dependency "os"
+  spec.add_dependency "fileutils"
 end

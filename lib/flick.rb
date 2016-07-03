@@ -3,6 +3,9 @@ require 'json'
 require 'parallel'
 require 'wannabe_bool'
 require 'awesome_print'
+require 'os'
+require 'fileutils'
+require 'tempfile'
 
 require "flick/version"
 require_relative "./flick/android"

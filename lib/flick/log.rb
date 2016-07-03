@@ -1,7 +1,7 @@
 class Log
-  
+
   attr_accessor :action, :platform, :driver, :udid
-  
+
   def initialize options
     Flick::Checker.action options[:action]
     Flick::Checker.platform options[:platform]
@@ -16,24 +16,26 @@ class Log
     end
     self.udid = self.driver.udid
   end
-  
+
   def run
     self.send(action)
   end
-  
+
   def start
     puts "Saving to #{driver.outdir}/#{driver.name}.log"
     log
   end
-  
+
   def stop
     Flick::System.kill_process "log", udid
+    @file.unlink
   end
-    
+
   def log
     stop
     $0 = "flick-log-#{udid}"
-    SimpleDaemon.daemonize! "/tmp/#{udid}-pidfile"
+    @file = Tempfile.new("#{udid}-pidfile")
+    SimpleDaemon.daemonize! @file
     command = -> do
       driver.log driver.name
     end
