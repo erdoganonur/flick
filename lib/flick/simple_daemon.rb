@@ -18,7 +18,7 @@
 # * The process becomes a session leader of a new session
 # * The process becomes the process group leader of a new process group
 # * The process has no controlling terminal
-# 
+#
 # Optionally fork again and have the parent exit. This guarantes that
 # the daemon is not a session leader nor can it acquire a controlling
 # terminal (under SVR4)
@@ -28,13 +28,13 @@
 #       \_ simple daemon - writes out its pid to file
 #
 # Change the current working directory to / to avoid interfering with
-# mounting and unmounting. By default don't bother to chdir("/") here 
+# mounting and unmounting. By default don't bother to chdir("/") here
 # because we might to run inside APP_ROOT.
 #
 # Set file mode creation mask to 000 to allow creation of files with any
-# required permission later. By default umask is whatever was set by the 
-# parent process at startup and can be set in config.ru and config_file, 
-# so making it 0000 and potentially exposing sensitive log data can be 
+# required permission later. By default umask is whatever was set by the
+# parent process at startup and can be set in config.ru and config_file,
+# so making it 0000 and potentially exposing sensitive log data can be
 # bad policy.
 #
 # Close unneeded file descriptors inherited from the parent (there is no
@@ -46,8 +46,9 @@
 # value of getpid() after step 3.
 #
 class SimpleDaemon
+
   # In the directory where you want your daemon add a git submodule to
-  # your project and create a daemon launcher script: 
+  # your project and create a daemon launcher script:
   #
   #     #!/usr/bin/env ruby
   #
@@ -74,14 +75,16 @@ class SimpleDaemon
   #     $ ps aux | grep "my daemon"
   #
   #
-  def self.daemonize! pidfile, out = '/dev/null', err = '/dev/null', safe = true
+  def self.daemonize! out = '/dev/null', err = '/dev/null', safe = true
     raise 'First fork failed' if (pid = fork) == -1
     exit unless pid.nil?
     Process.setsid
     raise 'Second fork failed' if (pid = fork) == -1
     exit unless pid.nil?
-    kill pidfile
-    write Process.pid, pidfile
+    kill_pid
+    @file = Tempfile.new
+    @file.write Process.pid
+    @file.rewind
     unless safe
       Dir.chdir '/'
       File.umask 0000
@@ -103,9 +106,12 @@ class SimpleDaemon
 
   # Try and read the existing pid from the pid file and signal HUP to
   # process.
-  def self.kill pidfile
-    opid = open(pidfile).read.strip.to_i
-    Process.kill "HUP", opid
+  def self.kill_pid
+    unless @file.nil?
+      opid = @file.read
+      Process.kill "HUP", opid
+      @file.unlink
+    end
   rescue TypeError
     $stdout.puts "#{pidfile} was empty: TypeError"
   rescue Errno::ENOENT

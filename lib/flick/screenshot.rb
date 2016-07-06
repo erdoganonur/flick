@@ -1,7 +1,7 @@
 class Screenshot
-  
+
   attr_accessor :platform, :driver
-  
+
   def initialize options
     Flick::Checker.platform options[:platform]
     self.platform = options[:platform]
@@ -14,15 +14,15 @@ class Screenshot
     end
     setup
   end
-    
+
   def screenshot
     puts "Saving to #{driver.outdir}/#{driver.name}.png"
     driver.screenshot driver.name
     driver.pull_file "#{driver.dir_name}/#{driver.name}.png", driver.outdir if platform == "android"
   end
-  
+
   private
-  
+
   def setup
     driver.clear_files
   end

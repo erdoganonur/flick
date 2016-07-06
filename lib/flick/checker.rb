@@ -1,6 +1,6 @@
 module Flick
   module Checker
-    def which(cmd)
+    def self.which(cmd)
       exts = ENV['PATHEXT'] ? ENV['PATHEXT'].split(';') : ['']
       ENV['PATH'].split(File::PATH_SEPARATOR).each do |path|
         exts.each { |ext|
@@ -12,7 +12,7 @@ module Flick
     end
 
     def self.system_dependency dep
-      program = which dep
+      program = self.which dep
       if program.empty?
         puts "\n#{dep} was not found. Please ensure you have installed #{dep} and it's in your $PATH\n".red
         abort

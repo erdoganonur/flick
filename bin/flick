@@ -84,6 +84,7 @@ command :info do |c|
 
     Info.new(options.default).info
   end
+end
 
 command :install do |c|
   c.syntax = 'flick info [options]'

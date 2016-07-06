@@ -1,27 +1,32 @@
 module Flick
   module System
 
+    include Sys
+
     def self.setup_system_dir dir_name
       Dir.mkdir dir_name unless File.exists? dir_name
     end
 
     def self.clean_system_dir dir_name, udid
-      Dir.glob("#{dir_name}/#{udid}*").each do |file|
+      Dir.glob("#{dir_name}/*#{udid}*").each do |file|
         File.delete file
       end
     end
 
-    def self.find_pid type, udid
-      ProcTable.ps.find { |x| x.cmdline.include? "#{type}-#{udid}" }.pid rescue nil
+    def self.find_pid string
+      processes = ProcTable.ps.find_all { |x| x.cmdline.include? string }
+      processes.map { |p| p.pid } rescue []
     end
 
-    def self.kill pid
-      Process.kill 'SIGKILL', pid unless pid.nil?
+    def self.kill_pids pid_array
+      return if pid_array.empty?
+      pid_array.each { |p| Process.kill 'SIGKILL', p }
     end
 
-    def self.process_running? type, udid
-      pid = self.find_pid type, udid
-      unless pid.nil?
+    def self.process_running? string
+      pid = self.find_pid string
+      unless pid.empty?
+        puts "PROCESSING IS RUNNING!!!"
         true
       else
         false
@@ -29,18 +34,20 @@ module Flick
     end
 
     def self.kill_process type, udid
-      pid = self.find_pid type, udid
-      self.kill pid
+      pids = self.find_pid "#{type}-#{udid}"
+      self.kill_pids pids
 
-      if type == "video"
-        pid = ProcTable.ps.find { |x| x.cmdline.include? "#{udid}-" }.pid rescue nil
-        self.kill pid
-      end
-
-      if type == "log" && OS.mac?
-        pid = ProcTable.ps.find { |x| x.cmdline.include? "idevicesyslog" }.pid rescue nil
-        self.kill pid
-      end
+      # if platform == "android"
+      #   pid = self.find_pid "#{udid} shell screenrecord" if type == "video"
+      #   pid = self.find_pid "#{udid} logcat" if type == "log"
+      # end
+      #
+      # if platform == "ios"
+      #   pid = self.find_pid "idevicesyslog -u #{udid}" if type == "log"
+      # end
+      #
+      # puts "Killing pid: #{pid} or #{type} #{platform}"
+      # self.kill pid
     end
 
     def self.video_length file

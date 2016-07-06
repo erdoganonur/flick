@@ -63,17 +63,12 @@ class Video
 
   private
 
-  def is_recording?
-    !(`pgrep -f #{udid}-`).empty?
-  end
-
   def start_record
     Flick::System.kill_process "video", udid
     $0 = "flick-video-#{udid}"
-    @file = Tempfile.new("#{udid}-pidfile")
-    SimpleDaemon.daemonize! @file
+    SimpleDaemon.daemonize!
     command = -> do
-       driver.screenrecord "#{udid}-single"
+       driver.screenrecord "video-#{udid}-single"
      end
     command.call
   end
@@ -81,13 +76,12 @@ class Video
   def loop_record
     Flick::System.kill_process "video", udid
     $0 = "flick-video-#{udid}"
-    @file = Tempfile.new("#{udid}-pidfile")
-    SimpleDaemon.daemonize! @file
+    SimpleDaemon.daemonize!
     command = -> do
       count = "%03d" % 1
       loop do
-        unless is_recording?
-          driver.screenrecord "#{udid}-#{count}"
+        unless Flick::System.process_running? "#{udid}-"
+          driver.screenrecord "video-#{udid}-#{count}"
           count.next!
         end
       end
@@ -98,15 +92,15 @@ class Video
   def stop_record
     Flick::System.kill_process "video", udid
     sleep 5 #wait for video process to finish
-    driver.pull_files
-    files = (`ls #{driver.flick_dir}/#{udid}*.mp4`).split("\n")
+    driver.pull_files "video"
+    files = Dir.glob("#{driver.flick_dir}/video-#{udid}*.mp4")
     return if files.empty?
     files.each { |file| system("mp4box -cat #{file} #{driver.flick_dir}/#{driver.name}.mp4") }
     puts "Saving to #{driver.outdir}/#{driver.name}.#{format}"
     if format == "gif"
       gif
     else
-      %x(nohup mv #{driver.flick_dir}/#{driver.name}.mp4 #{driver.outdir}/#{driver.name}.mp4)
+      File.rename "#{driver.flick_dir}/#{driver.name}.mp4", "#{driver.outdir}/#{driver.name}.mp4"
     end
   end
 
@@ -114,13 +108,12 @@ class Video
     Flick::System.kill_process "screenshot", udid
     puts "Process will stop after #{image_count} screenshots.\n"
     $0 = "flick-screenshot-#{udid}"
-    @file = Tempfile.new("#{udid}-pidfile")
-    SimpleDaemon.daemonize! @file
+    SimpleDaemon.daemonize!
     command = -> do
       count = "%03d" % 1
       loop do
         if count.to_i < image_count
-          driver.screenshot "#{udid}-#{count}"
+          driver.screenshot "screenshot-#{udid}-#{count}"
           count.next!; sleep seconds
         else
           puts "\nStop count exceeded. Saving to #{driver.outdir}/#{driver.name}.#{format}".red
@@ -134,28 +127,29 @@ class Video
 
   def stop_screenshot_recording
     Flick::System.kill_process "screenshot", udid
-    @file.unlink
-    driver.pull_files if android
+    driver.pull_files "screenshot" if android
     puts "Saving to #{driver.outdir}/#{driver.name}.#{format}"
     self.send(format)
   end
 
   def gif
     convert_images_to_mp4 unless driver.recordable?
-    %x(nohup ffmpeg -i #{driver.flick_dir}/#{driver.name}.mp4 -pix_fmt rgb24 #{driver.outdir}/#{driver.name}.gif)
+    %x(ffmpeg -loglevel quiet -i #{driver.flick_dir}/#{driver.name}.mp4 -pix_fmt rgb24 #{driver.outdir}/#{driver.name}.gif)
   end
 
   def mp4
     convert_images_to_mp4
-    %x(nohup mv #{driver.flick_dir}/#{driver.name}.mp4 #{driver.outdir}/#{driver.name}.mp4) unless format == "gif"
+    File.rename "#{driver.flick_dir}/#{driver.name}.mp4", "#{driver.outdir}/#{driver.name}.mp4" unless format == "gif"
   end
 
   def convert_images_to_mp4
     remove_zero_byte_images
-    %x(nohup ffmpeg -framerate 1 -pattern_type glob -i '#{driver.flick_dir}/#{udid}*.png' -c:v libx264 -pix_fmt yuv420p #{driver.flick_dir}/#{driver.name}.mp4)
+    %x(ffmpeg -loglevel quiet -framerate 1 -pattern_type glob -i '#{driver.flick_dir}/screenshot-#{udid}*.png' -c:v libx264 -pix_fmt yuv420p #{driver.flick_dir}/#{driver.name}.mp4)
   end
 
   def remove_zero_byte_images
-    %x(nohup find #{driver.flick_dir} -type f -size 0 | xargs rm '#{udid}*.png' -f)
+    Dir.glob("#{driver.flick_dir}/screenshot-#{udid}*.png").each do |f|
+      File.delete f if File.zero? f
+    end
   end
 end

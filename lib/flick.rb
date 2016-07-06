@@ -5,6 +5,7 @@ require 'wannabe_bool'
 require 'awesome_print'
 require 'os'
 require 'tempfile'
+require 'sys/proctable'
 
 require "flick/version"
 require_relative "./flick/android"

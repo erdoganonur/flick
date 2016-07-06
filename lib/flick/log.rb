@@ -27,15 +27,13 @@ class Log
   end
 
   def stop
-    Flick::System.kill_process "log", udid
-    @file.unlink
+    Flick::System.kill_process "log", udid, platform
   end
 
   def log
     stop
     $0 = "flick-log-#{udid}"
-    @file = Tempfile.new("#{udid}-pidfile")
-    SimpleDaemon.daemonize! @file
+    SimpleDaemon.daemonize!
     command = -> do
       driver.log driver.name
     end

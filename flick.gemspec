@@ -34,5 +34,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "json", '~> 1.8', '>= 1.8.3'
   spec.add_dependency "wannabe_bool", "~> 0.5.0"
   spec.add_dependency "awesome_print", '~> 1.6', '>= 1.6.1'
-  spec.add_dependency "os"
+  spec.add_dependency "os", "~> 0.9.6"
+  spec.add_dependency "sys-proctable", '~> 1.1', '>= 1.1.1'
 end
