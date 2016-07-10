@@ -38,6 +38,11 @@ module Flick
       self.kill_pids pids
     end
 
+    def self.kill string
+      pids = self.find_pid string
+      self.kill_pids pids
+    end
+
     def self.video_length file
       (`ffmpeg -i #{file} 2>&1 | grep Duration | cut -d ' ' -f 4 | sed s/,//`).strip
     end

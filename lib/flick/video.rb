@@ -112,12 +112,10 @@ class Video
     command = -> do
       count = "%03d" % 1
       loop do
-        if count.to_i < image_count
+        if count.to_i <= image_count
           driver.screenshot "screenshot-#{udid}-#{count}"
           count.next!; sleep seconds
         else
-          puts "\nStop count exceeded. Saving to #{driver.outdir}/#{driver.name}.#{format}".red
-          #self.send(format)
           stop_screenshot_recording
           break
         end
@@ -127,7 +125,6 @@ class Video
   end
 
   def stop_screenshot_recording
-    Flick::System.kill_process "screenshot", udid
     driver.pull_files "screenshot" if android
     puts "Saving to #{driver.outdir}/#{driver.name}.#{format}"
     self.send(format)

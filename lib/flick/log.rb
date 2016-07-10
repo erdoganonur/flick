@@ -17,6 +17,14 @@ class Log
     self.udid = self.driver.udid
   end
 
+  def android
+    platform == "android"
+  end
+
+  def ios
+    platform == "ios"
+  end
+
   def run
     self.send(action)
   end
@@ -27,7 +35,9 @@ class Log
   end
 
   def stop
-    Flick::System.kill_process "log", udid, platform
+    Flick::System.kill_process "log", udid
+    Flick::System.kill "idevicesyslog -u #{udid}" if ios
+    Flick::System.kill "adb -s #{udid} logcat" if android
   end
 
   def log

@@ -89,8 +89,6 @@ Usage:
     -t, --trace
       Display backtrace when an error occurs
 
-* See usage examples in:
-
 	`$ flick info --help`
 
 		$ flick info -p (ios or android)
@@ -104,7 +102,7 @@ Usage:
 
 	`$ flick screenshot --help`
 
-		$ flick screenshot -p (ios or android)
+		$ flick screenshot -p (ios or android) -o $HOME -n myImage
 
 	`$ flick video --help`
 
@@ -113,8 +111,11 @@ Usage:
 		$ flick video -a start -p android -u emulator-5554 -c 1000
 		$ flick video -a stop -p android -u emulator-5554
 
-Demo
-----
+	`$ flick manager --help`
+		$ flick manager -a install -p (ios or android) -f ~/myApp/my-awesome-app.apk or .app
+		$ flick maanger -a uninstall -p (ios or android) -n com.package.name
+
+##Demo
 <img src="https://www.dropbox.com/s/9be37gc1c2dlxa6/flick-demo.gif?raw=1" width="600">
 
 ## Contributing

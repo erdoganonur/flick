@@ -88,7 +88,7 @@ end
 
 command :manager do |c|
   c.syntax = 'flick manager [options]'
-  c.summary = 'Manage app on devices'
+  c.summary = 'Manage apps on devices'
   c.description = c.summary
   c.example 'description', "flick manager -a install -p android -f ~/my-awesome-app.apk\n    flick manager -a uninstall -p ios -n com.viber"
   c.option '-a', '--action ACTION', String, 'Set action: install or uninstall'
