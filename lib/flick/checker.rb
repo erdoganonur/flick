@@ -35,6 +35,21 @@ module Flick
       end
     end
 
+    def self.manager option
+      options = ["install","uninstall"]
+      unless actions.include? action
+        puts "\nPlease specify a valid option #{options}. e.g. flick <job> -a #{options.sample} -p ios\n".red
+        abort
+      end
+    end
+
+    def self.file_exists? file
+      unless File.exists? file
+        puts "\n#{file} does not exist! Please specify a valid file path. e.g. #{Dir.home}/myApp/amazing-app.apk\n".red
+        abort
+      end
+    end
+
     def self.format format
       formats = ["mp4","gif"]
       unless formats.include? format

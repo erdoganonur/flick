@@ -1,7 +1,7 @@
 module Flick
   module System
 
-    include Sys
+    include Sys #load sys-proctable methods
 
     def self.setup_system_dir dir_name
       Dir.mkdir dir_name unless File.exists? dir_name
@@ -36,18 +36,6 @@ module Flick
     def self.kill_process type, udid
       pids = self.find_pid "#{type}-#{udid}"
       self.kill_pids pids
-
-      # if platform == "android"
-      #   pid = self.find_pid "#{udid} shell screenrecord" if type == "video"
-      #   pid = self.find_pid "#{udid} logcat" if type == "log"
-      # end
-      #
-      # if platform == "ios"
-      #   pid = self.find_pid "idevicesyslog -u #{udid}" if type == "log"
-      # end
-      #
-      # puts "Killing pid: #{pid} or #{type} #{platform}"
-      # self.kill pid
     end
 
     def self.video_length file

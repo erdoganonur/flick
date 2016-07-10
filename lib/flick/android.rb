@@ -61,6 +61,28 @@ module Flick
       hash
     end
 
+    def install app_path
+      %x(adb -s #{udid} install -r #{app_path})
+    end
+
+    def uninstall package
+      %x(adb -s #{udid} shell pm uninstall #{package})
+    end
+
+    def app_version app_path
+      manifest(app_path).find {|x| x.name == "versionName" }["value"]
+    end
+
+    def package_name app_path
+      manifest(app_path).find {|x| x.name == "package" }["value"]
+    end
+
+    def manifest app_path
+      data = ApkXml.new app_path
+      data.parse_xml("AndroidManifest.xml", false, true)
+      data.xml_elements[0].attributes
+    end
+
     def os_version
       %x(adb -s #{udid} shell getprop "ro.build.version.release").strip.to_f
     end

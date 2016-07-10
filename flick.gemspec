@@ -36,4 +36,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "awesome_print", '~> 1.6', '>= 1.6.1'
   spec.add_dependency "os", "~> 0.9.6"
   spec.add_dependency "sys-proctable", '~> 1.1', '>= 1.1.1'
+  spec.add_dependency "apktools", '~> 0.7.1', '>= 0.7.1'
 end
