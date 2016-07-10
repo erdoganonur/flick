@@ -20,6 +20,8 @@ Features
 * Flick auto selects device when only one device is connected, per platform.
 * Save log output for Android or iOS.
 * Display device information or save it to a file.
+* Install or Unstall application from devices.
+* Checkout the latest release notes [here](https://github.com/isonic1/flick/releases).
 
 Reason
 ------
