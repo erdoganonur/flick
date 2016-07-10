@@ -37,7 +37,7 @@ module Flick
 
     def self.manager option
       options = ["install","uninstall"]
-      unless actions.include? action
+      unless options.include? option
         puts "\nPlease specify a valid option #{options}. e.g. flick <job> -a #{options.sample} -p ios\n".red
         abort
       end
@@ -45,7 +45,7 @@ module Flick
 
     def self.file_exists? file
       unless File.exists? file
-        puts "\n#{file} does not exist! Please specify a valid file path. e.g. #{Dir.home}/myApp/amazing-app.apk\n".red
+        puts "\n#{file} does not exist! Please specify a valid file path.".red
         abort
       end
     end

@@ -66,7 +66,12 @@ module Flick
     end
 
     def uninstall package
-      %x(adb -s #{udid} shell pm uninstall #{package})
+      if app_installed? package
+        %x(adb -s #{udid} shell pm uninstall #{package})
+      else
+        puts packages
+        puts "\n#{package} was not found on device #{udid}! Please choose one from above. e.g. #{packages.sample}\n".red
+      end
     end
 
     def app_version app_path
@@ -81,6 +86,14 @@ module Flick
       data = ApkXml.new app_path
       data.parse_xml("AndroidManifest.xml", false, true)
       data.xml_elements[0].attributes
+    end
+
+    def app_installed? package
+      packages.include? "package:#{package}"
+    end
+
+    def packages
+      %x(adb -s #{udid} shell pm list packages).split
     end
 
     def os_version

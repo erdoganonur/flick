@@ -5,7 +5,6 @@ class Manager
   def initialize options
     Flick::Checker.manager options[:action]
     Flick::Checker.platform options[:platform]
-    Flick::Checker.file_exists? options[:file]
     self.action = options[:action]
     self.platform = options[:platform]
     case platform
@@ -24,14 +23,19 @@ class Manager
   end
 
   def install
-    driver.install file
+    if file.nil?
+      puts "Specify a file path. e.g. -f #{Dir.home}/myApp/amazing-app.apk or .app".red; abort
+    else
+      Flick::Checker.file_exists? file
+      driver.install file
+    end
   end
 
   def uninstall
     if name.nil?
-      puts "Specify a Package Name or Bundle ID".red
-      abort
+      puts "Specify a Package Name or Bundle ID. e.g. -n ".red; abort
+    else
+      driver.uninstall name
     end
-    driver.uninstall name
   end
 end

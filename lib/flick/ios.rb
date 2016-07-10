@@ -70,5 +70,28 @@ module Flick
       Flick::Checker.system_dependency "idevicesyslog"
       %x(idevicesyslog -u #{udid} > #{outdir}/#{name}.log)
     end
+
+    def install app_path
+      Flick::Checker.system_dependency "ideviceinstaller"
+      %x(ideviceinstaller -u #{udid} -i #{app_path})
+    end
+
+    def uninstall package
+      Flick::Checker.system_dependency "ideviceinstaller"
+      if app_installed? package
+        %x(ideviceinstaller -u #{udid} -U #{package})
+      else
+        puts packages
+        puts "\n#{package} was not found on device #{udid}! Please choose one from above. e.g. #{packages.sample}\n".red
+      end
+    end
+
+    def app_installed? package
+      packages.include? "#{package}"
+    end
+
+    def packages
+      %x(ideviceinstaller -u #{udid} -l -o list_user).split("\n")[1..100000].map { |p| p.match(/(.*) -/)[1] }
+    end
   end
 end

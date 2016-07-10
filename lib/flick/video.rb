@@ -117,7 +117,8 @@ class Video
           count.next!; sleep seconds
         else
           puts "\nStop count exceeded. Saving to #{driver.outdir}/#{driver.name}.#{format}".red
-          self.send(format)
+          #self.send(format)
+          stop_screenshot_recording
           break
         end
       end
