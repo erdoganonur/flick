@@ -1,28 +1,48 @@
 module Flick
   module System
+
+    include Sys #load sys-proctable methods
+
     def self.setup_system_dir dir_name
-      %x(mkdir #{dir_name} >> /dev/null 2>&1)
+      Dir.mkdir dir_name unless File.exists? dir_name
     end
-    
+
     def self.clean_system_dir dir_name, udid
-      %x(rm #{dir_name}/#{udid}* >> /dev/null 2>&1)
+      Dir.glob("#{dir_name}/*#{udid}*").each do |file|
+        File.delete file
+      end
     end
-    
-    def self.process_running? type, udid
-      `pgrep -f #{type}-#{udid}`.to_i > 0
+
+    def self.find_pid string
+      processes = ProcTable.ps.find_all { |x| x.cmdline.include? string }
+      processes.map { |p| p.pid } rescue []
     end
-            
+
+    def self.kill_pids pid_array
+      return if pid_array.empty?
+      pid_array.each { |p| Process.kill 'SIGKILL', p }
+    end
+
+    def self.process_running? string
+      pid = self.find_pid string
+      unless pid.empty?
+        puts "PROCESSING IS RUNNING!!!"
+        true
+      else
+        false
+      end
+    end
+
     def self.kill_process type, udid
-      if self.process_running? type, udid
-        pid = `pgrep -f flick-#{type}-#{udid}`.to_i
-        `kill #{pid}` unless pid.zero?
-      end
-      if type == "video"
-        pid = `pgrep -f #{udid}-`.to_i
-        `kill #{pid}` unless pid.zero?
-      end
+      pids = self.find_pid "#{type}-#{udid}"
+      self.kill_pids pids
     end
-    
+
+    def self.kill string
+      pids = self.find_pid string
+      self.kill_pids pids
+    end
+
     def self.video_length file
       (`ffmpeg -i #{file} 2>&1 | grep Duration | cut -d ' ' -f 4 | sed s/,//`).strip
     end

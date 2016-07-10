@@ -29,17 +29,24 @@ So I created Flick to work for my needs, and included a couple other tools I use
 
 If you're looking for high-quality video, then this wouldn't be the tool for you. Take a look at this great tool [androidtool-mac](https://github.com/mortenjust/androidtool-mac) instead.
 
-Prerequisites 
+Prerequisites
 -------------
 #### System Tools
 * Install ffmpeg. [OSX](https://trac.ffmpeg.org/wiki/CompilationGuide/MacOSX)
 	* ```$ brew install ffmpeg```
+* Install ffmpeg. [Windows](https://ffmpeg.zeranoe.com/builds/)
+	* Download either the 32-bit or 64-bit static versions.
+	* Extract the zip file and move the ffmpeg folder somewhere else.
+	* Add the ffmpeg bin location to your PATH user variables. e.g. C:\ffmpeg\bin
 * Install mp4box. [OSX](http://hunterford.me/compiling-mp4box-on-mac-os-x/)
 	* ```$ brew install mp4box```
+* Install mp4box. [Windows](http://www.videohelp.com/software/MP4Box)
+	* Run the gpac-0.6.2-DEV-rev634-gd2332cb-master-x(64 or 32 bit).exe
+	* Select to install only the MP4Box component.
 
 #### Android
 * Install [SDK Tools](http://developer.android.com/sdk/installing/index.html?pkg=tools).
-* SDK tools are added to your $PATH. [OSX](http://stackoverflow.com/questions/5526470/trying-to-add-adb-to-path-variable-osx) 
+* SDK tools are added to your $PATH. [OSX](http://stackoverflow.com/questions/5526470/trying-to-add-adb-to-path-variable-osx)
 * Enable [USB Debugging](https://www.kingoapp.com/root-tutorials/how-to-enable-usb-debugging-mode-on-android.htm) on your device(s).
 * Emulator or Devices have approximately 1GB of [sdcard space](http://developer.android.com/tools/help/mksdcard.html).
 
@@ -61,54 +68,55 @@ Usage:
     $ flick --help
 
     DESCRIPTION:
-  
+
     A CLI to capture screenshots, video, logs, and device info for Android (Devices & Emulators) and iOS (Devices).
-	
+
 	COMMANDS:
-   
-    help       Display global or [command] help documentation           
-    info       Get device information           
-    log        Get device log output            
-    screenshot Take a screenshot                
-    video      Record video     
-    
+
+    help       Display global or [command] help documentation
+    info       Get device information
+    log        Get device log output
+    screenshot Take a screenshot
+    video      Record video
+
     GLOBAL OPTIONS:
-        
-    -h, --help 
+
+    -h, --help
       Display help documentation
-        
-    -v, --version 
+
+    -v, --version
       Display version information
-        
-    -t, --trace 
+
+    -t, --trace
       Display backtrace when an error occurs
 
-* See usage examples in:
-	
 	`$ flick info --help`
-		
+
 		$ flick info -p (ios or android)
 		$ flick info -p (ios or android) -s true -o $HOME
-	
- 
+
+
 	`$ flick log --help`
-		
+
 		$ flick log -a start -p (ios or android) -o $HOME -n iosLog
 		$ flick log -a stop -p (ios or android)
 
 	`$ flick screenshot --help`
-		
-		$ flick screenshot -p (ios or android)
- 
+
+		$ flick screenshot -p (ios or android) -o $HOME -n myImage
+
 	`$ flick video --help`
-		
+
 		$ flick video -a start -p (ios or android)
 		$ flick video -a stop -p (ios or android) -o /output -n myVideo -f gif
 		$ flick video -a start -p android -u emulator-5554 -c 1000
 		$ flick video -a stop -p android -u emulator-5554
 
-Demo
-----
+	`$ flick manager --help`
+		$ flick manager -a install -p (ios or android) -f ~/myApp/my-awesome-app.apk or .app
+		$ flick maanger -a uninstall -p (ios or android) -n com.package.name
+
+##Demo
 <img src="https://www.dropbox.com/s/9be37gc1c2dlxa6/flick-demo.gif?raw=1" width="600">
 
 ## Contributing

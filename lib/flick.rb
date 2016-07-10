@@ -3,6 +3,10 @@ require 'json'
 require 'parallel'
 require 'wannabe_bool'
 require 'awesome_print'
+require 'os'
+require 'tempfile'
+require 'sys/proctable'
+require 'apktools/apkxml'
 
 require "flick/version"
 require_relative "./flick/android"
@@ -14,3 +18,4 @@ require_relative "./flick/screenshot"
 require_relative "./flick/simple_daemon"
 require_relative "./flick/system"
 require_relative "./flick/video"
+require_relative "./flick/manager"
