@@ -36,15 +36,8 @@ Prerequisites
 #### System Tools
 * Install ffmpeg. [OSX](https://trac.ffmpeg.org/wiki/CompilationGuide/MacOSX)
 	* ```$ brew install ffmpeg```
-<!-- * Install ffmpeg. [Windows](https://ffmpeg.zeranoe.com/builds/)
-	* Download either the 32-bit or 64-bit static versions.
-	* Extract the zip file and move the ffmpeg folder somewhere else.
-	* Add the ffmpeg bin location to your PATH user variables. e.g. C:\ffmpeg\bin -->
 * Install mp4box. [OSX](http://hunterford.me/compiling-mp4box-on-mac-os-x/)
 	* ```$ brew install mp4box```
-<!-- * Install mp4box. [Windows](http://www.videohelp.com/software/MP4Box)
-	* Run the gpac-0.6.2-DEV-rev634-gd2332cb-master-x(64 or 32 bit).exe
-	* Select to install only the MP4Box component. -->
 
 #### Android
 * Install [SDK Tools](http://developer.android.com/sdk/installing/index.html?pkg=tools).
