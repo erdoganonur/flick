@@ -7,10 +7,8 @@ module Flick
       Dir.mkdir dir_name unless File.exists? dir_name
     end
 
-    def self.clean_system_dir dir_name, udid
-      Dir.glob("#{dir_name}/*#{udid}*").each do |file|
-        File.delete file
-      end
+    def self.clean_system_dir dir_name
+      Dir.glob("#{dir_name}/*").each { |file| File.delete file }
     end
 
     def self.find_pid string

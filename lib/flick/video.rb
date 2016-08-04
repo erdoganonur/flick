@@ -21,27 +21,19 @@ class Video
     self.format = options[:format]
   end
 
-  def android
-    platform == "android"
-  end
-
-  def ios
-    platform == "ios"
-  end
-
   def run
     self.send(action)
   end
 
   def start
     driver.clear_files
-    puts "\nStarting Recoder!!!"
     if driver.recordable?
       if extended
         puts "In extended mode."
         Flick::Checker.system_dependency "mp4box"
         loop_record
       else
+        puts "Device is NOT Recordable!!!"
         start_record
       end
     else
@@ -63,12 +55,20 @@ class Video
 
   private
 
+  def android
+    platform == "android"
+  end
+
+  def ios
+    platform == "ios"
+  end
+
   def start_record
     Flick::System.kill_process "video", udid
     $0 = "flick-video-#{udid}"
     SimpleDaemon.daemonize!
     command = -> do
-       driver.screenrecord "video-#{udid}-single"
+       driver.screenrecord "video-single"
      end
     command.call
   end
@@ -81,7 +81,7 @@ class Video
       count = "%03d" % 1
       loop do
         unless Flick::System.process_running? "#{udid}-"
-          driver.screenrecord "video-#{udid}-#{count}"
+          driver.screenrecord "video-#{count}"
           count.next!
         end
       end
@@ -93,7 +93,7 @@ class Video
     Flick::System.kill_process "video", udid
     sleep 5 #wait for video process to finish
     driver.pull_files "video"
-    files = Dir.glob("#{driver.flick_dir}/video-#{udid}*.mp4")
+    files = Dir.glob("#{driver.flick_dir}/video*.mp4")
     return if files.empty?
     files.each { |file| system("mp4box -cat #{file} #{driver.flick_dir}/#{driver.name}.mp4") }
     puts "Saving to #{driver.outdir}/#{driver.name}.#{format}"
@@ -113,7 +113,7 @@ class Video
       count = "%03d" % 1
       loop do
         if count.to_i <= image_count
-          driver.screenshot "screenshot-#{udid}-#{count}"
+          driver.screenshot "screenshot-#{count}"
           count.next!; sleep seconds
         else
           stop_screenshot_recording
@@ -126,8 +126,9 @@ class Video
 
   def stop_screenshot_recording
     driver.pull_files "screenshot" if android
-    puts "Saving to #{driver.outdir}/#{driver.name}.#{format}"
     self.send(format)
+    Flick::System.kill_process "screenshot", udid
+    puts "Saving to #{driver.outdir}/#{driver.name}.#{format}"
   end
 
   def gif
@@ -140,13 +141,21 @@ class Video
     File.rename "#{driver.flick_dir}/#{driver.name}.mp4", "#{driver.outdir}/#{driver.name}.mp4" unless format == "gif"
   end
 
+  def wait_for_file file
+    start = Time.now
+    until File.exists? file
+      sleep 1; break if Time.now - start > 30
+    end
+  end
+
   def convert_images_to_mp4
     remove_zero_byte_images
-    %x(ffmpeg -loglevel quiet -framerate 1 -pattern_type glob -i '#{driver.flick_dir}/screenshot-#{udid}*.png' -c:v libx264 -pix_fmt yuv420p #{driver.flick_dir}/#{driver.name}.mp4)
+    %x(ffmpeg -loglevel quiet -framerate 1 -pattern_type glob -i '#{driver.flick_dir}/screenshot*.png' -c:v libx264 -pix_fmt yuv420p #{driver.flick_dir}/#{driver.name}.mp4)
+    wait_for_file "#{driver.flick_dir}/#{driver.name}.mp4"
   end
 
   def remove_zero_byte_images
-    Dir.glob("#{driver.flick_dir}/screenshot-#{udid}*.png").each do |f|
+    Dir.glob("#{driver.flick_dir}/screenshot*.png").each do |f|
       File.delete f if File.zero? f
     end
   end

@@ -17,14 +17,6 @@ class Log
     self.udid = self.driver.udid
   end
 
-  def android
-    platform == "android"
-  end
-
-  def ios
-    platform == "ios"
-  end
-
   def run
     self.send(action)
   end
@@ -45,8 +37,18 @@ class Log
     $0 = "flick-log-#{udid}"
     SimpleDaemon.daemonize!
     command = -> do
-      driver.log driver.name
+      driver.log "#{driver.name}"
     end
    command.call
+  end
+
+  private
+
+  def android
+    platform == "android"
+  end
+
+  def ios
+    platform == "ios"
   end
 end
