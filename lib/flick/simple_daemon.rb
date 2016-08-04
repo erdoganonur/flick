@@ -82,7 +82,7 @@ class SimpleDaemon
     raise 'Second fork failed' if (pid = fork) == -1
     exit unless pid.nil?
     kill_pid
-    @file = Tempfile.new
+    @file = Tempfile.new("flick-temp")
     @file.write Process.pid
     @file.rewind
     unless safe
@@ -115,9 +115,9 @@ class SimpleDaemon
   rescue TypeError
     $stdout.puts "#{pidfile} was empty: TypeError"
   rescue Errno::ENOENT
-    #$stdout.puts "#{pidfile} did not exist: Errno::ENOENT"
+    $stdout.puts "#{pidfile} did not exist: Errno::ENOENT"
   rescue Errno::ESRCH
-    #$stdout.puts "The process #{opid} did not exist: Errno::ESRCH"
+    $stdout.puts "The process #{opid} did not exist: Errno::ESRCH"
   rescue Errno::EPERM
     raise "Lack of privileges to manage the process #{opid}: Errno::EPERM"
   rescue ::Exception => e

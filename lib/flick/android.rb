@@ -4,15 +4,19 @@ module Flick
 
     def initialize options
       Flick::Checker.system_dependency "adb"
-      self.flick_dir = "#{Dir.home}/.flick"
-      self.dir_name = "sdcard/flick"
       self.udid = options.fetch(:udid, get_device_udid(options))
-      self.name = options.fetch(:name, self.udid)
+      self.flick_dir = "#{Dir.home}/.flick/#{udid}"
+      self.dir_name = "sdcard/flick"
+      self.name = remove_bad_characters(options.fetch(:name, self.udid))
       self.outdir = options.fetch(:outdir, Dir.pwd)
       self.unique = options.fetch(:unique, true).to_b
       self.limit = options.fetch(:limit, 180)
       self.specs = options.fetch(:specs, false)
       create_flick_dirs
+    end
+
+    def remove_bad_characters string
+      string.gsub(/[\x00\/\\:\*\?\"<>\|]/, '_')
     end
 
     def create_flick_dirs
@@ -21,7 +25,7 @@ module Flick
     end
 
     def clear_files
-      Flick::System.clean_system_dir flick_dir, udid
+      Flick::System.clean_system_dir flick_dir
       %x(adb -s #{udid} shell rm '#{dir_name}/*')
     end
 
@@ -41,8 +45,7 @@ module Flick
     end
 
     def get_device_udid opts_hash
-      devices_connected?
-      return unless opts_hash[:udid].nil?
+      check_for_devices
       if devices.size == 1
         devices.first
       else
@@ -109,7 +112,8 @@ module Flick
     end
 
     def recordable?
-      %x(adb -s #{udid} shell "ls /system/bin/screenrecord").strip == "/system/bin/screenrecord"
+      #%x(adb -s #{udid} shell "ls /system/bin/screenrecord").strip == "/system/bin/screenrecord"
+      !(udid.include? "emulator" or info[:manufacturer] == "Genymotion")
     end
 
     def screenrecord name
@@ -126,7 +130,7 @@ module Flick
       else
         command = "md5sum"
       end
-      files = %x(adb -s #{udid} shell "#{command} #{dir_name}/#{type}-#{udid}*")
+      files = %x(adb -s #{udid} shell "#{command} #{dir_name}/#{type}*")
       hash = files.split("\r\n").map { |file| { md5: file.match(/(.*) /)[1].strip, file: file.match(/ (.*)/)[1].strip } }
       hash.uniq! { |e| e[:md5] }
       hash.map { |file| file[:file] }
@@ -136,7 +140,7 @@ module Flick
       if unique
         files = unique_files type
       else
-        files = %x(adb -s #{udid} shell "ls #{dir_name}/#{type}-#{udid}*").split("\r\n")
+        files = %x(adb -s #{udid} shell "ls #{dir_name}/#{type}*").split("\r\n")
       end
       return if files.empty?
       Parallel.map(files, in_threads: 10) { |file| pull_file file, flick_dir }

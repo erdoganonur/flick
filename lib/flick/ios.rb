@@ -3,14 +3,17 @@ module Flick
     attr_accessor :flick_dir, :udid, :name, :outdir, :todir, :specs
 
     def initialize options
-      Flick::Checker.system_dependency "idevice_id"
-      self.flick_dir = "#{Dir.home}/.flick"
       self.udid = options.fetch(:udid, get_device_udid(options))
-      self.name = options.fetch(:name, self.udid)
+      self.flick_dir = "#{Dir.home}/.flick/#{udid}"
+      self.name = remove_bad_characters(options.fetch(:name, self.udid))
       self.todir = options.fetch(:todir, self.flick_dir)
       self.outdir = options.fetch(:outdir, Dir.pwd)
       self.specs = options.fetch(:specs, false)
       create_flick_dirs
+    end
+
+    def remove_bad_characters string
+      string.gsub(/[\x00\/\\:\*\?\"<>\|]/, '_')
     end
 
     def create_flick_dirs
@@ -18,6 +21,7 @@ module Flick
     end
 
     def devices
+      Flick::Checker.system_dependency "idevice_id"
       (`idevice_id -l`).split.uniq.map { |d| d }
     end
 
@@ -58,7 +62,7 @@ module Flick
     end
 
     def clear_files
-      Flick::System.clean_system_dir flick_dir, udid
+      Flick::System.clean_system_dir flick_dir
     end
 
     def screenshot name

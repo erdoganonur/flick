@@ -15,10 +15,6 @@ class Screenshot
     setup
   end
 
-  def android
-    platform == "android"
-  end
-
   def screenshot
     puts "Saving to #{driver.outdir}/#{driver.name}.png"
     driver.screenshot driver.name
@@ -26,6 +22,10 @@ class Screenshot
   end
 
   private
+
+  def android
+    platform == "android"
+  end
 
   def setup
     driver.clear_files
