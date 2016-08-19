@@ -112,8 +112,11 @@ module Flick
     end
 
     def recordable?
-      #%x(adb -s #{udid} shell "ls /system/bin/screenrecord").strip == "/system/bin/screenrecord"
-      !(udid.include? "emulator" or info[:manufacturer] == "Genymotion")
+      if info[:manufacturer] == "Genymotion"
+        return false
+      else
+        %x(adb -s #{udid} shell "ls /system/bin/screenrecord").strip == "/system/bin/screenrecord"
+      end
     end
 
     def screenrecord name
