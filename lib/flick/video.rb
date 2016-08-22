@@ -29,11 +29,9 @@ class Video
     driver.clear_files
     if driver.recordable?
       if extended
-        puts "In extended mode."
         Flick::Checker.system_dependency "mp4box"
         loop_record
       else
-        puts "Device is NOT Recordable!!!"
         start_record
       end
     else
