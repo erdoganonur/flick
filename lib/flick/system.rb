@@ -34,6 +34,10 @@ module Flick
     def self.kill_process type, udid
       pids = self.find_pid "#{type}-#{udid}"
       self.kill_pids pids
+      if type == "video"
+        pid = `pgrep -f #{udid}`.to_i
+        `kill #{pid}` unless pid.zero?
+      end
     end
 
     def self.kill string

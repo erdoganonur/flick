@@ -1,10 +1,14 @@
 module Flick
   class Android
-    attr_accessor :flick_dir, :dir_name, :udid, :name, :outdir, :unique, :limit, :specs
+    attr_accessor :udid, :flick_dir, :dir_name, :name, :outdir, :unique, :limit, :specs
 
     def initialize options
       Flick::Checker.system_dependency "adb"
-      self.udid = options.fetch(:udid, get_device_udid(options))
+      if options[:udid].nil?
+        self.udid = get_device_udid
+      else
+        self.udid = options[:udid]
+      end
       self.flick_dir = "#{Dir.home}/.flick/#{udid}"
       self.dir_name = "sdcard/flick"
       self.name = remove_bad_characters(options.fetch(:name, self.udid))
@@ -44,7 +48,7 @@ module Flick
       end
     end
 
-    def get_device_udid opts_hash
+    def get_device_udid
       check_for_devices
       if devices.size == 1
         devices.first
