@@ -30,12 +30,15 @@ class Video
     if driver.recordable?
       if extended
         Flick::Checker.system_dependency "mp4box"
+        puts "Starting Recorder In Extended Mode.\n"
         loop_record
       else
+        puts "Starting Recorder In Normal Mode.\nRecorder will automatically stop after 180 seconds...\n"
         start_record
       end
     else
       Flick::Checker.system_dependency "ffmpeg"
+      puts "Starting Screenshot Recorder...\n"
       start_screenshot_record
     end
   end
@@ -64,11 +67,12 @@ class Video
   def start_record
     Flick::System.kill_process "video", udid
     $0 = "flick-video-#{udid}"
-    SimpleDaemon.daemonize!
-    command = -> do
-       driver.screenrecord "video-single"
-     end
-    command.call
+    # SimpleDaemon.daemonize!
+    # command = -> do
+    #    driver.screenrecord "video-single"
+    #  end
+    # command.call
+    driver.screenrecord "video-single"
   end
 
   def loop_record
@@ -88,12 +92,13 @@ class Video
   end
 
   def stop_record
-    Flick::System.kill_process "video", udid
-    sleep 5 #wait for video process to finish
+    # Flick::System.kill_process "video", udid
+    # sleep 5 #wait for video process to finish
+    driver.stop_screenrecord
     driver.pull_files "video"
     files = Dir.glob("#{driver.flick_dir}/video*.mp4")
     return if files.empty?
-    files.each { |file| system("mp4box -cat #{file} #{driver.flick_dir}/#{driver.name}.mp4") }
+    files.each { |file| system("mp4box -cat #{file} #{driver.flick_dir}/#{driver.name}.mp4") } #renames video-single to udid or name if given...
     puts "Saving to #{driver.outdir}/#{driver.name}.#{format}"
     if format == "gif"
       gif

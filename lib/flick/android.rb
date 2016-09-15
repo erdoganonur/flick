@@ -119,8 +119,23 @@ module Flick
       end
     end
 
-    def screenrecord name
-      %x(adb -s #{udid} shell screenrecord --time-limit #{limit} --size 720x1280 #{dir_name}/#{name}.mp4)
+    # def screenrecord name
+    #   c = ChildProcess.build("adb", "-s #{udid}", "shell screenrecord --time-limit #{limit} --size 720x1280 #{dir_name}/#{name}.mp4")
+    #   c.start
+    # end
+
+    def screenrecord blah
+      $c = ChildProcess.build("adb", "shell", "screenrecord", "#{dir_name}/#{name}.mp4")
+      #@c.detach = true
+      $c.start
+      puts "video pid: #{$c.pid}"
+    end
+
+    def stop_screenrecord
+      puts "video pid: #{$c.pid}"
+      puts "methods: #{$c.methods}"
+      $c.stop
+      sleep 5
     end
 
     def pull_file file, dir
