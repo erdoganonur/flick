@@ -13,7 +13,7 @@ module Flick
 
     def self.system_dependency dep
       program = self.which dep
-      if program.empty?
+      if program.nil? || program.empty? 
         puts "\n#{dep} was not found. Please ensure you have installed #{dep} and it's in your $PATH\n".red
         abort
       end

@@ -28,8 +28,8 @@ class Video
   def start
     driver.clear_files
     if driver.recordable?
+      Flick::Checker.system_dependency "mp4box"
       if extended
-        Flick::Checker.system_dependency "mp4box"
         puts "Starting Recorder In Extended Mode.\n"
         loop_record
       else
@@ -95,7 +95,10 @@ class Video
     sleep 5 #wait for video process to finish
     driver.pull_files "video"
     files = Dir.glob("#{driver.flick_dir}/video*.mp4")
-    return if files.empty?
+    if files.empty?
+      puts "\nError! No video files found in #{driver.flick_dir}\n".red
+      return
+    end
     files.each { |file| system("mp4box -cat #{file} #{driver.flick_dir}/#{driver.name}.mp4") } #renames video-single to udid or name if given...
     puts "Saving to #{driver.outdir}/#{driver.name}.#{format}"
     if format == "gif"
