@@ -24,6 +24,7 @@ module Flick
     end
 
     def create_flick_dirs
+      Flick::System.setup_system_dir "#{Dir.home}/.flick"
       Flick::System.setup_system_dir flick_dir
       %x(adb -s #{udid} shell 'mkdir #{dir_name}')
     end
