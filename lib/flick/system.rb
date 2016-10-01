@@ -44,6 +44,14 @@ module Flick
       pids = self.find_pid string
       self.kill_pids pids
     end
+    
+    def self.wait_for_file time, file
+      start = Time.now
+      until File.exists? file
+        puts "Waiting for #{file} to exist..."
+        sleep 1; break if Time.now - start > time
+      end
+    end
 
     def self.video_length file
       (`ffmpeg -i #{file} 2>&1 | grep Duration | cut -d ' ' -f 4 | sed s/,//`).strip

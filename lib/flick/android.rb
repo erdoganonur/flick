@@ -143,7 +143,7 @@ module Flick
       hash.uniq! { |e| e[:md5] }
       hash.map { |file| file[:file] }
     end
-
+    
     def pull_files type
       if unique
         files = unique_files type
@@ -151,7 +151,10 @@ module Flick
         files = %x(adb -s #{udid} shell "ls #{dir_name}/#{type}*").split("\r\n")
       end
       return if files.empty?
-      Parallel.map(files, in_threads: 10) { |file| pull_file file, flick_dir }
+      Parallel.map(files, in_threads: 10) do |file| 
+        pull_file file, flick_dir
+        Flick::System.wait_for_file 10, "#{flick_dir}/#{file.split("/").last}"
+      end
     end
   end
 end

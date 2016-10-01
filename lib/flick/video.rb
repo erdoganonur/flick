@@ -92,8 +92,8 @@ class Video
 
   def stop_record
     Flick::System.kill_process "video", udid #kills recording
-    sleep 5 #wait for video process to finish
-    driver.pull_files "video"
+    sleep 5 #wait for video process to completely finish on device.
+    driver.pull_files "video" 
     files = Dir.glob("#{driver.flick_dir}/video*.mp4")
     if files.empty?
       puts "\nError! No video files found in #{driver.flick_dir}\n".red
@@ -104,7 +104,7 @@ class Video
     if format == "gif"
       gif
     else
-      File.rename "#{driver.flick_dir}/#{driver.name}.mp4", "#{driver.outdir}/#{driver.name}.mp4"
+      File.rename "#{driver.flick_dir}/#{driver.name}.mp4", "#{driver.outdir}/#{driver.name}.mp4" #moves file from .flick to output dir.
     end
   end
 
@@ -145,22 +145,13 @@ class Video
     File.rename "#{driver.flick_dir}/#{driver.name}.mp4", "#{driver.outdir}/#{driver.name}.mp4" unless format == "gif"
   end
 
-  def wait_for_file file
-    start = Time.now
-    until File.exists? file
-      sleep 1; break if Time.now - start > 30
-    end
-  end
-
   def convert_images_to_mp4
     remove_zero_byte_images
     %x(ffmpeg -loglevel quiet -framerate 1 -pattern_type glob -i '#{driver.flick_dir}/screenshot*.png' -c:v libx264 -pix_fmt yuv420p #{driver.flick_dir}/#{driver.name}.mp4)
-    wait_for_file "#{driver.flick_dir}/#{driver.name}.mp4"
+    Flick::System.wait_for_file 30, "#{driver.flick_dir}/#{driver.name}.mp4"
   end
 
   def remove_zero_byte_images
-    Dir.glob("#{driver.flick_dir}/screenshot*.png").each do |f|
-      File.delete f if File.zero? f
-    end
+    Dir.glob("#{driver.flick_dir}/screenshot*.png").each { |f| File.delete f if File.zero? f }
   end
 end
