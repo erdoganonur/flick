@@ -45,6 +45,7 @@
 # grandchild, either the return value of the second fork (step 3) or the
 # value of getpid() after step 3.
 #
+
 class SimpleDaemon
 
   # In the directory where you want your daemon add a git submodule to

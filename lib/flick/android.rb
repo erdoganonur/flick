@@ -30,7 +30,7 @@ module Flick
     end
 
     def clear_files
-      Flick::System.clean_system_dir flick_dir
+      Flick::System.clean_system_dir flick_dir, udid
       %x(adb -s #{udid} shell rm '#{dir_name}/*')
     end
 
@@ -113,6 +113,7 @@ module Flick
     end
 
     def log name
+      %x(adb -s #{udid} logcat -c)
       %x(adb -s #{udid} logcat -v long > #{outdir}/#{name}.log)
     end
 
@@ -153,7 +154,7 @@ module Flick
       return if files.empty?
       Parallel.map(files, in_threads: 10) do |file| 
         pull_file file, flick_dir
-        Flick::System.wait_for_file 10, "#{flick_dir}/#{file.split("/").last}"
+        #Flick::System.wait_for_file 10, "#{flick_dir}/#{file.split("/").last}"
       end
     end
   end

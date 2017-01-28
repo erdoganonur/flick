@@ -10,6 +10,7 @@ module Flick
       self.outdir = options.fetch(:outdir, Dir.pwd)
       self.specs = options.fetch(:specs, false)
       create_flick_dirs
+      is_paired?
     end
 
     def remove_bad_characters string
@@ -19,6 +20,15 @@ module Flick
     def create_flick_dirs
       Flick::System.setup_system_dir "#{Dir.home}/.flick"
       Flick::System.setup_system_dir flick_dir
+    end
+    
+    def is_paired?
+      Flick::Checker.system_dependency "idevicepair"
+      unless %x(idevicepair -u #{udid} validate).split[0] == "SUCCESS:"
+        puts "\nUDID: #{udid} - Is not paired with your machine!".red
+        puts "Run: idevicepair -u <udid> pair\n".red
+        abort
+      end
     end
 
     def devices
@@ -63,7 +73,7 @@ module Flick
     end
 
     def clear_files
-      Flick::System.clean_system_dir flick_dir
+      Flick::System.clean_system_dir flick_dir, udid
     end
 
     def screenshot name
@@ -73,7 +83,9 @@ module Flick
 
     def log name
       Flick::Checker.system_dependency "idevicesyslog"
-      %x(idevicesyslog -u #{udid} > #{outdir}/#{name}.log)
+      system("idevicesyslog -u #{udid} > #{outdir}/#{name}.log")
+      #file = File.open("#{outdir}/#{name}.log", 'a') { |f| f.puts "\n<<<<<<<<<<<<<<<<<<<<<<<<< FLICK LOG START >>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n" }
+      #file.close
     end
 
     def install app_path

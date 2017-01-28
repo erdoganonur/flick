@@ -7,8 +7,10 @@ module Flick
       Dir.mkdir dir_name unless File.exists? dir_name
     end
 
-    def self.clean_system_dir dir_name
-      Dir.glob("#{dir_name}/*").each { |file| File.delete file }
+    def self.clean_system_dir dir_name, udid
+      Dir.glob("#{dir_name}/*#{udid}*").each do |file|
+        File.delete file
+      end
     end
 
     def self.find_pid string
@@ -34,23 +36,11 @@ module Flick
     def self.kill_process type, udid
       pids = self.find_pid "#{type}-#{udid}"
       self.kill_pids pids
-      if type == "video"
-        pid = `pgrep -f #{udid}`.to_i
-        `kill #{pid}` unless pid.zero?
-      end
     end
 
     def self.kill string
       pids = self.find_pid string
       self.kill_pids pids
-    end
-    
-    def self.wait_for_file time, file
-      start = Time.now
-      until File.exists? file
-        puts "Waiting for #{file} to exist..."
-        sleep 1; break if Time.now - start > time
-      end
     end
 
     def self.video_length file
