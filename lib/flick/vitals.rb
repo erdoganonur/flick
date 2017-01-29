@@ -19,12 +19,10 @@ class Vitals
     if platform == "ios"
       puts "\nAndroid only for now. If you know of a tool to get this info for iOS please let me know or add a PR :)\n".yellow; abort
     end
-    if vitals
-      if name.nil?
-        puts "Specify a Package Name. e.g. -n com.viber".red; abort
-      else
-        driver.get_vitals name
-      end
+    if name.nil?
+      puts "Specify a Package Name. e.g. -n com.viber".red; abort
+    else
+      driver.get_vitals name
     end
   end
 end

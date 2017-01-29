@@ -1,5 +1,5 @@
 # FLICK
-A CLI to capture screenshots, video, logs, and device information for Android (Devices & Emulators) and iOS (Devices).
+A CLI to capture screenshots, video, logs, device info and device vitals(memory, cpu) for Android (Devices & Emulators) and iOS (Devices).
 
 <img src="https://www.dropbox.com/s/o49et3fhncu3l4v/animacii_09.gif?raw=1" width="600">
 
@@ -110,6 +110,9 @@ Usage:
 	`$ flick manager --help`
 		$ flick manager -a install -p (ios or android) -f ~/myApp/my-awesome-app.apk or .app
 		$ flick maanger -a uninstall -p (ios or android) -n com.package.name
+
+	`$ flick vitals --help`
+		$ flick vitals -n com.package.name
 
 ##Demo
 <img src="https://www.dropbox.com/s/9be37gc1c2dlxa6/flick-demo.gif?raw=1" width="600">

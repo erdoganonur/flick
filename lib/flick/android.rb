@@ -71,28 +71,26 @@ module Flick
     
     def system_stats
       x = %x(adb shell top -n 1 -d 1 | grep System).split(",")
-      user = x.find { |x| x.include? "User" }.match(/User (.*)%/)[1]
-      sys  = x.find { |x| x.include? "System" }.match(/System (.*)%/)[1]
-      iow  = x.find { |x| x.include? "IOW" }.match(/IOW (.*)%/)[1]
-      irq  = x.find { |x| x.include? "IRQ" }.match(/IRQ (.*)%/)[1]
+      user = x.find { |x| x.include? "User" }.match(/User (.*)%/)[1].to_i
+      sys  = x.find { |x| x.include? "System" }.match(/System (.*)%/)[1].to_i
+      iow  = x.find { |x| x.include? "IOW" }.match(/IOW (.*)%/)[1].to_i
+      irq  = x.find { |x| x.include? "IRQ" }.match(/IRQ (.*)%/)[1].to_i
       { user: user, system: sys, iow: iow, irq: irq }
     end
 
-    def memory
-      memory = (%x(adb shell dumpsys meminfo | grep #{package} | awk '{print $1}').strip.split.last.to_i * 0.001).round(2)
-      puts "Memory: #{memory} MB"
-      memory
+    def memory package
+      (%x(adb shell dumpsys meminfo | grep #{package} | awk '{print $1}').strip.split.last.to_i * 0.001).round(2)
     end
 
-    def cpu
-      cpu = %x(adb shell top -n 1 -d 1 | grep #{package} | awk '{print $3}').strip.chomp("%").to_i
-      puts "Cpu: #{cpu}%"
-      cpu
+    def cpu package
+      %x(adb shell top -n 1 -d 1 | grep #{package} | awk '{print $3}').strip.chomp("%").to_i
     end
     
     def get_vitals package
       if app_installed? package
-        { app_stats: { memory: memory, cpu: cpu }, system_stats: system_stats }
+        stats = { app_stats: { memory_mb: memory(package), cpu_per: cpu(package) }, system_stats: system_stats }
+        puts stats
+        return stats
       else
         puts packages
         puts "\n#{package} was not found on device #{udid}! Please choose one from above. e.g. #{packages.sample}\n".red
