@@ -2,7 +2,7 @@
 require_relative '../lib/flick'
 require 'commander/import'
 
-program :version, '0.3.5'
+program :version, '0.3.6'
 program :description, 'A CLI to capture screenshots, video, logs, and device info for Android (Devices & Emulators) and iOS (Devices).'
 
 command :video do |c|
@@ -108,6 +108,7 @@ command :manager do |c|
     c.example 'description', "flick vitals -p android -n com.viber"
     c.option '-p', '--platform PLATFORM', String, 'Set platform: android or ios'
     c.option '-n', '--name NAME', String, 'Set the package name.'
+    c.option '-u', '--udid UDID', String, 'Set device UDID.'
     c.action do |args, options|
 
       Vitals.new(options.default).vitals

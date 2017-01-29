@@ -70,7 +70,7 @@ module Flick
     end
     
     def system_stats
-      x = %x(adb shell top -n 1 -d 1 | grep System).split(",")
+      x = %x(adb -s #{udid} shell top -n 1 -d 1 | grep System).split(",")
       user = x.find { |x| x.include? "User" }.match(/User (.*)%/)[1].to_i
       sys  = x.find { |x| x.include? "System" }.match(/System (.*)%/)[1].to_i
       iow  = x.find { |x| x.include? "IOW" }.match(/IOW (.*)%/)[1].to_i
@@ -79,11 +79,11 @@ module Flick
     end
 
     def memory package
-      (%x(adb shell dumpsys meminfo | grep #{package} | awk '{print $1}').strip.split.last.to_i * 0.001).round(2)
+      (%x(adb -s #{udid} shell dumpsys meminfo | grep #{package} | awk '{print $1}').strip.split.last.to_i * 0.001).round(2)
     end
 
     def cpu package
-      %x(adb shell top -n 1 -d 1 | grep #{package} | awk '{print $3}').strip.chomp("%").to_i
+      %x(adb -s #{udid} shell top -n 1 -d 1 | grep #{package} | awk '{print $3}').strip.chomp("%").to_i
     end
     
     def get_vitals package
