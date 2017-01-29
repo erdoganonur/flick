@@ -26,8 +26,10 @@ class Info
   private
 
   def save_device_data info
+    file = "#{driver.outdir}/info-#{driver.name}.log" 
+    File.delete file if File.exists? file
     info.each do |k,v|
-      open("#{driver.outdir}/info-#{driver.name}.log", 'w') do |file|
+      open(file, 'a') do |file|
         file << "#{k}: #{v}\n"
       end
     end
