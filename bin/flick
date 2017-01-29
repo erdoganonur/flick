@@ -100,4 +100,17 @@ command :manager do |c|
 
     Manager.new(options.default).run
   end
+  
+  command :vitals do |c|
+    c.syntax = 'flick vitals [options]'
+    c.summary = 'Android Only! Get apps and device vitals - App Memory Used, App CPU %. System Stats: (User, System, IQW, IRQ)'
+    c.description = c.summary
+    c.example 'description', "flick vitals -n <package Namecom.viber"
+    c.option '-p', '--platform PLATFORM', String, 'Set platform: android or ios'
+    c.option '-n', '--name NAME', String, 'Set the package name.'
+    c.action do |args, options|
+
+      Vitals.new(options.default).run
+    end
+  end
 end

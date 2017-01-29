@@ -14,7 +14,7 @@ class Info
     end
     self.save = options[:save].to_b
   end
-
+  
   def info
     ap driver.info
     if save
@@ -22,12 +22,12 @@ class Info
       save_device_data driver.info
     end
   end
-
+  
   private
 
   def save_device_data info
     info.each do |k,v|
-      open("#{driver.outdir}/info-#{driver.name}.log", 'a') do |file|
+      open("#{driver.outdir}/info-#{driver.name}.log", 'w') do |file|
         file << "#{k}: #{v}\n"
       end
     end
