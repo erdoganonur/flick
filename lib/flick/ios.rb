@@ -26,7 +26,7 @@ module Flick
       Flick::Checker.system_dependency "idevicepair"
       unless %x(idevicepair -u #{udid} validate).split[0] == "SUCCESS:"
         puts "\nUDID: #{udid} - Is not paired with your machine!".red
-        puts "Run: idevicepair -u <udid> pair\n".red
+        puts "Run: idevicepair -u <udid> pair\nIf not working still, see: https://github.com/isonic1/flick/issues/10".red
         abort
       end
     end

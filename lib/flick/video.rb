@@ -68,8 +68,8 @@ class Video
     $0 = "flick-video-#{udid}"
     SimpleDaemon.daemonize!
     command = -> do
-       driver.screenrecord "video-#{udid}-single"
-     end
+      driver.screenrecord "video-#{udid}-single"
+    end
     command.call
   end
 

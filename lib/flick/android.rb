@@ -16,6 +16,7 @@ module Flick
       self.unique = options.fetch(:unique, true).to_b
       self.limit = options.fetch(:limit, 180)
       self.specs = options.fetch(:specs, false)
+      self.size = options.fetch(:size, "720x1280")
       create_flick_dirs
     end
 
@@ -88,9 +89,10 @@ module Flick
     
     def get_vitals package
       if app_installed? package
-        stats = { app_stats: { memory_mb: memory(package), cpu_per: cpu(package) }, system_stats: system_stats }
-        puts stats
-        return stats
+        stats = JSON.generate({ app_stats: { memory_mb: memory(package), cpu_per: cpu(package) }, system_stats: system_stats })
+        json = JSON.parse stats
+        puts json
+        return json
       else
         puts packages
         puts "\n#{package} was not found on device #{udid}! Please choose one from above. e.g. #{packages.sample}\n".red
@@ -154,7 +156,7 @@ module Flick
     end
 
     def screenrecord name
-      %x(adb -s #{udid} shell screenrecord --time-limit #{limit} --size 720x1280 #{dir_name}/#{name}.mp4)
+      %x(adb -s #{udid} shell screenrecord --time-limit #{limit} --size #{size} #{dir_name}/#{name}.mp4)
     end
 
     def pull_file file, dir

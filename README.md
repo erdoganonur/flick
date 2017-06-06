@@ -85,33 +85,33 @@ Usage:
     -t, --trace
       Display backtrace when an error occurs
 
-	`$ flick info --help`
+	 $ flick info --help
 
 		$ flick info -p (ios or android)
 		$ flick info -p (ios or android) -s true -o $HOME
 
 
-	`$ flick log --help`
+	 $ flick log --help
 
 		$ flick log -a start -p (ios or android) -o $HOME -n iosLog
 		$ flick log -a stop -p (ios or android)
 
-	`$ flick screenshot --help`
+	 $ flick screenshot --help
 
 		$ flick screenshot -p (ios or android) -o $HOME -n myImage
 
-	`$ flick video --help`
+	 $ flick video --help
 
 		$ flick video -a start -p (ios or android)
 		$ flick video -a stop -p (ios or android) -o /output -n myVideo -f gif
 		$ flick video -a start -p android -u emulator-5554 -c 1000
 		$ flick video -a stop -p android -u emulator-5554
 
-	`$ flick manager --help`
+	 $ flick manager --help
 		$ flick manager -a install -p (ios or android) -f ~/myApp/my-awesome-app.apk or .app
 		$ flick maanger -a uninstall -p (ios or android) -n com.package.name
 
-	`$ flick vitals --help`
+	 $ flick vitals --help
 		$ flick vitals -n com.package.name
 
 ##Demo

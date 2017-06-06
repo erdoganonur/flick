@@ -114,4 +114,20 @@ command :manager do |c|
       Vitals.new(options.default).vitals
     end
   end
+  
+  command :applitools do |c|
+    c.syntax = 'flick at [options]'
+    c.summary = 'Upload baseline images to Applitools'
+    c.description = c.summary
+    c.example 'description', "flick at -p android\n    flick info -p ios"
+    c.option '-p', '--platform PLATFORM', String, 'Set platform: android or ios'
+    c.option '-u', '--udid UDID', String, 'Set device UDID.'
+    c.action do |args, options|
+      options.default \
+      :save => false,
+      :outdir => Dir.pwd #defaults to save in current directory.
+
+      Info.new(options.default).info
+    end
+  end
 end
