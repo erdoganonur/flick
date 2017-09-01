@@ -114,7 +114,8 @@ class Video
       loop do
         if count.to_i <= image_count
           driver.screenshot "screenshot-#{udid}-#{count}"
-          count.next!; sleep seconds
+          count.next!
+          # sleep seconds
         else
           stop_screenshot_recording
           break
@@ -143,12 +144,60 @@ class Video
 
   def convert_images_to_mp4
     remove_zero_byte_images
-    %x(ffmpeg -loglevel quiet -framerate 1 -pattern_type glob -i '#{driver.flick_dir}/screenshot-#{udid}*.png' -c:v libx264 -pix_fmt yuv420p #{driver.flick_dir}/#{driver.name}.mp4)
+    # %x(ffmpeg -loglevel quiet -framerate 1 -pattern_type glob -i '#{driver.flick_dir}/screenshot-#{udid}*.png' -c:v libx264 -pix_fmt yuv420p #{driver.flick_dir}/#{driver.name}.mp4)
+
+    create_timecode_file
+
+    #MP4 Creation for constant framerate
+    puts "ffmpeg -pattern_type glob -i '#{driver.flick_dir}/screenshot-#{udid}*.png' -pix_fmt yuv420p #{driver.flick_dir}/record-#{udid}-cfr.mp4 \n"
+    command = Thread.new do
+      system("ffmpeg -pattern_type glob -i '#{driver.flick_dir}/screenshot-#{udid}*.png' -pix_fmt yuv420p #{driver.flick_dir}/record-#{udid}-cfr.mp4")
+    end
+    command.join
+    puts "===== Command was completed ===== \n"
+
+    #MP4 is converted variable frame rate against to the timecode.txt via mp4fpsmod command.
+    puts "mp4fpsmod -o #{driver.flick_dir}/record-#{udid}-vfr.mp4 -t #{driver.flick_dir}/timecode-#{udid}.txt #{driver.flick_dir}/record-#{udid}-cfr.mp4 \n"
+    command = Thread.new do
+      system("mp4fpsmod -o #{driver.flick_dir}/record-#{udid}-vfr.mp4 -t #{driver.flick_dir}/timecode-#{udid}.txt #{driver.flick_dir}/record-#{udid}-cfr.mp4")
+    end
+    command.join
+    puts "===== Command was completed ===== \n"
+
+    #MP4 is converted to vfr to cfr for proper playback.
+    puts "ffmpeg -i #{driver.flick_dir}/record-#{udid}-vfr.mp4 #{driver.flick_dir}/#{driver.name}.mp4 \n"
+    command = Thread.new do
+      system("ffmpeg -i #{driver.flick_dir}/record-#{udid}-vfr.mp4 #{driver.flick_dir}/#{driver.name}.mp4")
+    end
+    command.join
+    puts "===== Command was completed ===== \n"
+
   end
 
   def remove_zero_byte_images
     Dir.glob("#{driver.flick_dir}/screenshot-#{udid}*.png").each do |f|
       File.delete f if File.zero? f
     end
+  end
+
+
+  def create_timecode_file
+    files = Dir.glob("#{driver.flick_dir}/screenshot-#{udid}*.png")
+    files = files.sort_by {|f| File.ctime(f)}
+
+    first_file_creation_time = File.ctime(files[0])
+
+    time_codes = []
+
+    files.each do |file|
+      diff = File::ctime(file) - first_file_creation_time
+      time_codes.insert(time_codes.length, (diff * 1000).to_i.to_s())
+    end
+
+    File.new(driver.flick_dir + "/timecode-#{udid}.txt", "w+")
+    File.open(driver.flick_dir + "/timecode-#{udid}.txt", "w+") do |f|
+      f.puts(time_codes)
+    end
+
   end
 end
