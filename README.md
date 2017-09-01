@@ -21,7 +21,8 @@ Features
 * Save log output for Android or iOS.
 * Display device information or save it to a file.
 * Install or Uninstall applications from devices.
-* Capture device vitals (Android Only) for app and system performance.
+* Capture device vitals (Android Only) for app and system performance. 
+   * If anyone knows of a tool to capture performance for iOS please let me know and I'll add it to Flick.
 * Checkout the latest release notes [here](https://github.com/isonic1/flick/releases).
 
 Reason
@@ -53,6 +54,20 @@ Prerequisites
 * Install [libimobiledevice](http://www.libimobiledevice.org/).
 	* ```$ brew install libimobiledevice```
 
+#### Known Issues
+* IOS:
+   * Sometimes ideviceinstaller gets out of sync with your OS due to various reasons. When this happens, screenshots and video will not work for iOS.
+      * Follow steps in [here](https://github.com/isonic1/flick/issues/10) to uninstall and reinstall dependencies.
+      * Make sure xcode and command line tools are up to date.
+      * Make sure iOS device is up to date with latest iOS version.
+      * Validate your device is paired to your machine. `$ idevicepair -u <udid> validate`
+      * Additionally, try to unpair and pair again.
+         * `$ idevicepair -u <udid> unpair`
+         * `$ idevicepair -u <udid> pair` Accept the Trust popup on the device.
+
+* Android:
+   * Some devices/emulators are read-only. Flick requires access to internal storage of the device/emulator to write files to. If the device is read-only it cannot do this so it will Abort. There is probably a solution to this but I, unfortunately, don't have a lot of time to figure it out. Pull Requests are highly encouragaged if you find this tool useful!
+
 Installation
 ------------
 
@@ -69,11 +84,13 @@ Usage:
 
 	COMMANDS:
 
-    help       Display global or [command] help documentation
-    info       Get device information
-    log        Get device log output
-    screenshot Take a screenshot
-    video      Record video
+    help       Display global or [command] help documentation           
+    info       Get device information           
+    log        Get device log output            
+    manager    Manage apps on devices           
+    screenshot Take a screenshot                
+    video      Record video             
+    vitals     Android Only! Get apps and device vitals - App Memory Used, App CPU %. System Stats: (User, System, IQW, IRQ) 
 
     GLOBAL OPTIONS:
 
