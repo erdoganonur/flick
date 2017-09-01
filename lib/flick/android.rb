@@ -1,6 +1,6 @@
 module Flick
   class Android
-    attr_accessor :udid, :flick_dir, :dir_name, :name, :outdir, :unique, :limit, :specs
+    attr_accessor :udid, :flick_dir, :dir_name, :name, :outdir, :unique, :limit, :specs, :size
 
     def initialize options
       Flick::Checker.system_dependency "adb"
@@ -27,7 +27,11 @@ module Flick
     def create_flick_dirs
       Flick::System.setup_system_dir "#{Dir.home}/.flick"
       Flick::System.setup_system_dir flick_dir
-      %x(adb -s #{udid} shell 'mkdir #{dir_name}')
+      message = %x(adb -s #{udid} shell 'mkdir #{dir_name}').split(":").last.strip
+      if message == "Read-only file system"
+        puts "\nDevice: '#{udid}' is a 'Read-only file system'! Flick cannot write to the sdcard folder. Aborting...\n".red
+        abort
+      end
     end
 
     def clear_files
@@ -92,7 +96,7 @@ module Flick
         stats = JSON.generate({ app_stats: { memory_mb: memory(package), cpu_per: cpu(package) }, system_stats: system_stats })
         json = JSON.parse stats
         puts json
-        return json
+        json
       else
         puts packages
         puts "\n#{package} was not found on device #{udid}! Please choose one from above. e.g. #{packages.sample}\n".red
