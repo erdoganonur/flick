@@ -1,6 +1,6 @@
 class Video
 
-  attr_accessor :action, :platform, :driver, :image_count, :seconds, :extended, :udid, :format
+  attr_accessor :action, :platform, :driver, :image_count, :seconds, :rate, :extended, :udid, :format
 
   def initialize options
     Flick::Checker.action options[:action]
@@ -16,6 +16,7 @@ class Video
     end
     self.image_count = options[:count]
     self.seconds = options[:seconds].to_f
+    self.rate = options[:rate].to_f
     self.extended = options[:extend].to_b
     self.udid = self.driver.udid
     self.format = options[:format]
@@ -143,7 +144,7 @@ class Video
 
   def convert_images_to_mp4
     remove_zero_byte_images
-    %x(ffmpeg -loglevel quiet -framerate 1 -pattern_type glob -i '#{driver.flick_dir}/screenshot-#{udid}*.png' -c:v libx264 -pix_fmt yuv420p #{driver.flick_dir}/#{driver.name}.mp4)
+    %x(ffmpeg -loglevel quiet -framerate #{rate} -pattern_type glob -i '#{driver.flick_dir}/screenshot-#{udid}*.png' -c:v libx264 -pix_fmt yuv420p #{driver.flick_dir}/#{driver.name}.mp4)
   end
 
   def remove_zero_byte_images

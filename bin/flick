@@ -2,7 +2,7 @@
 require_relative '../lib/flick'
 require 'commander/import'
 
-program :version, '0.3.6'
+program :version, '0.4.0'
 program :description, 'A CLI to capture screenshots, video, logs, and device info for Android (Devices & Emulators) and iOS (Devices).'
 
 command :video do |c|
@@ -19,10 +19,12 @@ command :video do |c|
   c.option '-n', '--name NAME', String, 'Set name of output file, Default: UDID'
   c.option '-q', '--unique UNIQUE', 'Pull only unique screenshots. Significantly speeds up the pulling process. Default: true'
   c.option '-f', '--format FORMAT', String, 'Set output format (mp4 or gif). Default: mp4'
+  c.option '-r', '--rate RATE', String, 'Set the framerate (in seconds) when converting screenshots to video. Default: 1'
   c.option '-o', '--outdir OUTDIR', String, "Set output directory. Default is #{Dir.pwd}"
   c.action do |args, options|
     options.default \
     :seconds => 0.5, #Seconds per screenshot.
+    :rate => 1, #Seconds per framerate for screenshot to video conversion.  
     :count => 500, #This is a safety check to stop runaway screenshot process.
     :extend => false, #Extend android video recording (for REAL devices and os >= 4.4) past 180 seconds.
     :unique => true, #defaults to pulling only unique screenshots. Speeds up pulling process from device.

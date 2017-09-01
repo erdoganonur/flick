@@ -21,6 +21,7 @@ Features
 * Save log output for Android or iOS.
 * Display device information or save it to a file.
 * Install or Uninstall applications from devices.
+* Capture device vitals (Android Only) for app and system performance.
 * Checkout the latest release notes [here](https://github.com/isonic1/flick/releases).
 
 Reason
@@ -112,7 +113,7 @@ Usage:
 		$ flick maanger -a uninstall -p (ios or android) -n com.package.name
 
 	 $ flick vitals --help
-		$ flick vitals -n com.package.name
+		$ flick vitals -p android -n com.awsome-package.name
 
 ##Demo
 <img src="https://www.dropbox.com/s/9be37gc1c2dlxa6/flick-demo.gif?raw=1" width="600">
