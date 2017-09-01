@@ -115,8 +115,7 @@ class Video
       loop do
         if count.to_i <= image_count
           driver.screenshot "screenshot-#{udid}-#{count}"
-          count.next!
-          # sleep seconds
+          count.next!; sleep seconds
         else
           stop_screenshot_recording
           break
