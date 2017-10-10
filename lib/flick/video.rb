@@ -1,6 +1,6 @@
 class Video
 
-  attr_accessor :action, :platform, :driver, :image_count, :seconds, :rate, :extended, :udid, :format
+  attr_accessor :action, :platform, :driver, :image_count, :seconds, :rate, :extended, :udid, :format, :time_table
 
   def initialize options
     Flick::Checker.action options[:action]
@@ -20,6 +20,7 @@ class Video
     self.extended = options[:extend].to_b
     self.udid = self.driver.udid
     self.format = options[:format]
+    self.time_table = Array.new
   end
 
   def android
@@ -109,11 +110,18 @@ class Video
     Flick::System.kill_process "screenshot", udid
     puts "Process will stop after #{image_count} screenshots.\n"
     $0 = "flick-screenshot-#{udid}"
+
+    first_screenshot_time = Time.now
+
     SimpleDaemon.daemonize!
     command = -> do
-      count = "%03d" % 1
+      count = "%05d" % 1
       loop do
         if count.to_i <= image_count
+          if count.to_i == 1
+
+          end
+
           driver.screenshot "screenshot-#{udid}-#{count}"
           count.next!; sleep seconds
         else
