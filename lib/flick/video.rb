@@ -116,13 +116,17 @@ class Video
     SimpleDaemon.daemonize!
     command = -> do
       count = "%05d" % 1
+      first_screenshot_time
+
       loop do
         if count.to_i <= image_count
-          if count.to_i == 1
-
-          end
-
           driver.screenshot "screenshot-#{udid}-#{count}"
+          if count.to_i == 0
+            @time_codes[count.to_i] = 0
+            first_screenshot_time = Time.now
+          else
+            @time_codes[count.to_i] = (Time.now - first_screenshot_time) * 1000
+          end
           count.next!; sleep seconds
         else
           stop_screenshot_recording
@@ -190,16 +194,18 @@ class Video
 
 
   def create_timecode_file
-    files = Dir.glob("#{driver.flick_dir}/screenshot-#{udid}*.png")
-    files = files.sort_by {|f| File.ctime(f)}
+    # files = Dir.glob("#{driver.flick_dir}/screenshot-#{udid}*.png")
+    # files = files.sort_by {|f| File.ctime(f)}
 
-    first_file_creation_time = File.ctime(files[0])
+    first_file_creation_time = @time_codes[0]
 
-    time_codes = []
+    # files.each do |file|
+    #   diff = File::ctime(file) - first_file_creation_time
+    #   time_codes.insert(time_codes.length, (diff * 1000).to_i.to_s())
+    # end
 
-    files.each do |file|
-      diff = File::ctime(file) - first_file_creation_time
-      time_codes.insert(time_codes.length, (diff * 1000).to_i.to_s())
+    @time_codes.each do |time|
+      diff
     end
 
     File.new(driver.flick_dir + "/timecode-#{udid}.txt", "w+")
